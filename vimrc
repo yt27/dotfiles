@@ -18,15 +18,19 @@
 "}}}
 
 " functions {{{
+  let s:cache_dir = '~/.vim/cache'
+
   function! s:get_cache_dir(suffix) "{{{
     return resolve(expand(s:cache_dir . '/' . a:suffix))
   endfunction "}}}
+
   function! Source(begin, end) "{{{
     let lines = getline(a:begin, a:end)
     for line in lines
       execute line
     endfor
   endfunction "}}}
+
   function! Preserve(command) "{{{
     " preparation: save last search, and cursor position.
     let _s=@/
@@ -38,14 +42,17 @@
     let @/=_s
     call cursor(l, c)
   endfunction "}}}
+
   function! StripTrailingWhitespace() "{{{
     call Preserve("%s/\\s\\+$//e")
   endfunction "}}}
+
   function! EnsureExists(path) "{{{
     if !isdirectory(expand(a:path))
       call mkdir(expand(a:path))
     endif
   endfunction "}}}
+
   function! CloseWindowOrKillBuffer() "{{{
     let number_of_windows_to_this_buffer = len(filter(range(1, winnr('$')), "winbufnr(v:val) == bufnr('%')"))
 
@@ -61,6 +68,252 @@
       bdelete
     endif
   endfunction "}}}
+
+  function! MakeExecutable()
+    silent !chmod u+x <afile>
+  endfunction
+
+  function! CountBuffers()
+    return len(filter(range(1,bufnr('$')),'buflisted(v:val)'))
+  endfunction
+"}}}
+
+" base configuration {{{
+  " Force 256 colors if xterm is in use or builtin_gui (vimperator workaround)
+  if &term == "xterm" || &term == "builtin_gui"
+     set t_Co=256
+  endif
+
+  " Allow backspacing over autoindent and over the start of insert
+  set backspace=indent,eol,start
+
+  " Remember marks for the last 20 files, contents of registers (up to 50 lines), registers with more than 100 KB text are
+  " skipped, restore hlsearch and save them to ~/.viminfo
+  " set viminfo='20,<50,s100,h,n~/.viminfo
+
+  " Use enhanced command-line completion mode
+  set wildmenu
+
+  " When more than one match, list all matches and complete till longest common string
+  set wildmode=list:longest,full
+
+  " Ignore these file extensions
+  set wildignore=*.o,*.obj,*.exe,*.class,*.pyc,*.pyo
+
+  " Don't scan included files (default was .,w,b,u,t,i)
+  set complete=.,w,b,u,t
+
+  " configure tags - add additional tags here or comment out not-used ones
+  set tags+=~/tags/cpp.ctags
+  set tags+=~/tags/usr_inc.ctags
+
+  " Sets how many lines of history VIM has to remember
+  set history=2000
+
+  " Maximum width of text that is being inserted. A longer line will wrap.
+  set textwidth=78
+
+  " Break at word endings
+  set linebreak
+
+  " Support all three fileformats, in this order
+  set fileformats=unix,dos,mac
+
+  " Ignore changes in amount of white spaces.
+  " set diffopt+=iwhite
+
+  " Allow backgrounding buffers without writing them.
+  set hidden
+
+  " Report every change
+  set report=0
+
+  " Don't move the cursor to the start of line when scrolling
+  set nostartofline
+
+  " Highlight the screen line of the cursor
+  set cursorline
+
+  " vim file/folder management {{{
+    " persistent undo
+    if exists('+undofile')
+      set undofile
+      let &undodir = s:get_cache_dir('undo')
+    endif
+
+    " backups
+    set backup
+    let &backupdir = s:get_cache_dir('backup')
+
+    " swap files
+    let &directory = s:get_cache_dir('swap')
+    set noswapfile
+
+    call EnsureExists(s:cache_dir)
+    call EnsureExists(&undodir)
+    call EnsureExists(&backupdir)
+    call EnsureExists(&directory)
+  "}}}
+"}}}
+
+" indent {{{
+  " Use spaces instead of tabs
+  set expandtab
+
+  " Number of spaces that a <Tab> counts for while performing editing operations
+  set softtabstop=2
+
+  " Number of spaces to use for each step of (auto)indent.
+  set shiftwidth=2
+
+  " Number of spaces that a <Tab> in the file counts for.
+  set tabstop=2
+
+  " Copy indent from current line when starting a new line
+  set autoindent
+
+  " Do smart autoindenting when starting a new line.
+  set smartindent
+"}}}
+
+" ui {{{
+  " Enable syntax highlighting
+  syntax on
+
+  " Show the line and column number of the cursor position
+  set ruler
+
+  " Print the line number in front of each line.
+  set number
+
+  " Always show the status line in the last window
+  set laststatus=2
+
+  " Show the mode in the status line
+  set showmode
+
+  " When a bracket is inserted, briefly jump to the matching one
+  set showmatch
+
+  " Tenths of a second to show the matching paren
+  set matchtime=15
+
+  " Show (partial) command in the last line of the screen.
+  set showcmd
+
+  " Try to use colors that look good on a dark background
+  set background=dark
+
+  " Minimal number of screen lines to keep above and below the cursor
+  set scrolloff=5
+
+  " Minimal number of columns to scroll horizontally.
+  set sidescroll=1
+
+  " Turn on folding
+  set foldenable
+
+  " fold according to syntax hl rules
+  set foldmethod=syntax
+
+  " Set colorscheme
+  colorscheme desert
+
+  " Splitting a window will put the new window right of the current one.
+  set splitright
+"}}}
+
+" gui {{{
+  if has("gui_running")
+    " Remove toolbar
+    set guioptions-=T
+    " Remove menubar
+    set guioptions-=m
+    " Remove right-hand scrollbar
+    set guioptions-=r
+    " Remove left-hand scrollbar when there is a vertically split window
+    set guioptions-=L
+  endif
+"}}}
+
+" mouse {{{
+  " Enable the use of mouse in all modes
+  set mouse-=a
+
+  " Name of the terminal type of which mouse codes are to be recognized.
+  set ttymouse=xterm2
+"}}}
+
+" status line {{{
+  " Clear statusline
+  set statusline=
+
+  " Append buffer number
+  set statusline+=%-n
+
+  " Append total number of buffers
+  set statusline+=/%-3.3{CountBuffers()}
+
+  " Append filename
+  set statusline+=%F\
+
+  " Append filetype
+  set statusline+=\[%{strlen(&ft)?&ft:'none'},
+
+  " Append encoding
+  set statusline+=%{&encoding},
+
+  " Append fileformat
+  set statusline+=%{&fileformat}]
+
+  " Append help buffer ([help]), modified flag ([+]), readonly flag ([RO]), preview window flag ([Preview])
+  set statusline+=\ %(%h%m%r%w%)
+
+  " Append separation point between left and right aligned items and change color to black
+  set statusline+=%=
+
+  " Set git branch info
+  " set statusline+=%(%{GitBranchInfoString()}\ %)
+  " Append line number, column number, virtual column number
+  set statusline+=%l,%c
+
+  " Separator
+  set statusline+=\ \ \|\ \
+
+  " Append percentage through file of displayed window
+  set statusline+=%3p%%
+
+  " Separator
+  set statusline+=\ \ \|\ \
+
+  " Append value of byte under cursor in hexadecimal
+  set statusline+=0x%-2B
+"}}}
+
+" search {{{
+  " While typing a search command, show where the pattern, as it was typed so far, matches
+  set incsearch
+
+  " When there is a previous search pattern, highlight all its matches
+  set hlsearch
+
+  " Ignore the case of normal letters
+  set ignorecase
+
+  " Don't override the 'ignorecase' option if the search pattern contains upper case characters
+  "set nosmartcase
+  set smartcase
+"}}}
+
+" search {{{
+  " Don't ring the bell (beep or screen flash) for error messages.
+  " set noerrorbells
+
+  " Don't use visual bell instead of beeping.
+  set novisualbell
+
+  " Don't beep or flash
+  set t_vb=
 "}}}
 
 " plugin/mapping configuration {{{
@@ -114,6 +367,45 @@
   NeoBundle 'Raimondi/delimitMate'
 "}}}
 
+" mapping {{{
+  map <leader>tn :tabnew .<cr>
+
+  " Show invisible characters
+  nmap <leader>l :set list!<cr>
+"}}}
+
+" autocommand {{{
+  " Make sure autocommands are loaded only once
+  if !exists("autocommands_loaded") && has("autocmd") "{{{
+    " Set noexpandtab automatically when editing makefiles
+    autocmd FileType make setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
+
+    " Reload vimrc after editing
+    autocmd BufWritePost ~/.vimrc source ~/.vimrc
+
+    " Automatically make shell scripts executable
+    autocmd BufWritePost *.sh call MakeExecutable()
+
+    " Enable spelling for *.txt files
+    autocmd BufRead,BufNewFile *.txt set spell
+
+    " go back to previous position of cursor if any
+    autocmd BufReadPost *
+          \ if line("'\"") > 0 && line("'\"") <= line("$") |
+          \  exe 'normal! g`"zvzz' |
+          \ endif
+
+    autocmd FileType js,scss,css autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+    autocmd FileType css,scss setlocal foldmethod=marker foldmarker={,}
+    autocmd FileType css,scss nnoremap <silent> <leader>S vi{:sort<CR>
+    autocmd FileType python setlocal foldmethod=indent
+    autocmd FileType markdown setlocal nolist
+    autocmd FileType vim setlocal fdm=indent keywordprg=:help
+
+    let autocommands_loaded=1
+  endif "}}}
+"}}}
+
 " finish loading {{{
   call neobundle#end()
   filetype plugin indent on
@@ -123,259 +415,6 @@
   NeoBundleCheck
 "}}}
 
-" Force 256 colors if xterm is in use or builtin_gui (vimperator workaround)
-if &term == "xterm" || &term == "builtin_gui"
-   set t_Co=256
-endif
-
-" Allow backspacing over autoindent and over the start of insert
-set backspace=indent,eol,start
-
-" Remember marks for the last 20 files, contents of registers (up to 50 lines), registers with more than 100 KB text are
-" skipped, restore hlsearch and save them to ~/.viminfo
-" set viminfo='20,<50,s100,h,n~/.viminfo
-
-" Use enhanced command-line completion mode
-set wildmenu
-
-" When more than one match, list all matches and complete till longest common string
-set wildmode=list:longest,full
-
-" Ignore these file extensions
-set wildignore=*.o,*.obj,*.exe,*.class,*.pyc,*.pyo
-
-" Don't scan included files (default was .,w,b,u,t,i)
-set complete=.,w,b,u,t
-
-" Set backup directory
-set backupdir=~/.vim/backups
-
-" Set swap file directory
-let $VIM_SWAP_DIR=expand("~/.vim/swap")
-set directory=$VIM_SWAP_DIR
-
-" Set up persistent undo
-let $VIM_UNDO_DIR=expand("~/.vim/undo")
-set undofile
-set undodir=$VIM_UNDO_DIR
-
-" configure tags - add additional tags here or comment out not-used ones
-set tags+=~/tags/cpp.ctags
-set tags+=~/tags/usr_inc.ctags
-
-" Sets how many lines of history VIM has to remember
-set history=2000
-
-" Maximum width of text that is being inserted. A longer line will wrap.
-set textwidth=78
-
-" Break at word endings
-set linebreak
-
-" Support all three fileformats, in this order
-set fileformats=unix,dos,mac
-
-" Ignore changes in amount of white spaces.
-" set diffopt+=iwhite
-
-" Allow backgrounding buffers without writing them.
-set hidden
-
-" Report every change
-set report=0
-
-" Don't move the cursor to the start of line when scrolling
-set nostartofline
-
-" Highlight the screen line of the cursor
-set cursorline
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Indent
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Use spaces instead of tabs
-set expandtab
-
-" Number of spaces that a <Tab> counts for while performing editing operations
-set softtabstop=2
-
-" Number of spaces to use for each step of (auto)indent.
-set shiftwidth=2
-
-" Number of spaces that a <Tab> in the file counts for.
-set tabstop=2
-
-" Copy indent from current line when starting a new line
-set autoindent
-
-" Do smart autoindenting when starting a new line.
-set smartindent
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" UI
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Enable syntax highlighting
-syntax on
-
-" Show the line and column number of the cursor position
-set ruler
-
-" Print the line number in front of each line.
-set number
-
-" Always show the status line in the last window
-set laststatus=2
-
-" Show the mode in the status line
-set showmode
-
-" When a bracket is inserted, briefly jump to the matching one
-set showmatch
-
-" Tenths of a second to show the matching paren
-set matchtime=15
-
-" Show (partial) command in the last line of the screen.
-set showcmd
-
-" Try to use colors that look good on a dark background
-set background=dark
-
-" Minimal number of screen lines to keep above and below the cursor
-set scrolloff=5
-
-" Minimal number of columns to scroll horizontally.
-set sidescroll=1
-
-" Turn on folding
-set foldenable
-
-" fold according to syntax hl rules
-set foldmethod=syntax
-
-" Set colorscheme
-colorscheme desert
-
-" Set the strings to use in 'list' mode.
-" set listchars=tab:â–¸\ ,eol:Â¬
-
-" Splitting a window will put the new window right of the current one.
-set splitright
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" GUI
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-if has("gui_running")
-   " Remove toolbar
-   set guioptions-=T
-   " Remove menubar
-   set guioptions-=m
-   " Remove right-hand scrollbar
-   set guioptions-=r
-   " Remove left-hand scrollbar when there is a vertically split window
-   set guioptions-=L
-endif
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Mouse
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Enable the use of mouse in all modes
-set mouse-=a
-
-" Name of the terminal type of which mouse codes are to be recognized.
-set ttymouse=xterm2
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Status line
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Clear statusline
-set statusline=
-
-" Append buffer number
-set statusline+=%-n
-
-" Append total number of buffers
-set statusline+=/%-3.3{CountBuffers()}
-
-" Append filename
-set statusline+=%F\
-
-" Append filetype
-set statusline+=\[%{strlen(&ft)?&ft:'none'},
-
-" Append encoding
-set statusline+=%{&encoding},
-
-" Append fileformat
-set statusline+=%{&fileformat}]
-
-" Append help buffer ([help]), modified flag ([+]), readonly flag ([RO]), preview window flag ([Preview])
-set statusline+=\ %(%h%m%r%w%)
-
-" Append separation point between left and right aligned items and change color to black
-set statusline+=%=
-
-" Set git branch info
-" set statusline+=%(%{GitBranchInfoString()}\ %)
-" Append line number, column number, virtual column number
-set statusline+=%l,%c
-
-" Separator
-set statusline+=\ \ \|\ \
-
-" Append percentage through file of displayed window
-set statusline+=%3p%%
-
-" Separator
-set statusline+=\ \ \|\ \
-
-" Append value of byte under cursor in hexadecimal
-set statusline+=0x%-2B
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Search
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" While typing a search command, show where the pattern, as it was typed so far, matches
-set incsearch
-
-" When there is a previous search pattern, highlight all its matches
-set hlsearch
-
-" Ignore the case of normal letters
-set ignorecase
-
-" Don't override the 'ignorecase' option if the search pattern contains upper case characters
-"set nosmartcase
-set smartcase
-
- 
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Bells
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Don't ring the bell (beep or screen flash) for error messages.
-" set noerrorbells
-
-" Don't use visual bell instead of beeping.
-set novisualbell
-
-" Don't beep or flash
-set t_vb=
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Spelling
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-set nospell
-
-" set spelllang=en_gb
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " GNU Global
@@ -394,37 +433,8 @@ set cscopetag
 " set csprg=gtags-cscope
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Functions
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-function! MakeExecutable()
-  silent !chmod u+x <afile>
-endfunction
-
-function! CountBuffers()
-   return len(filter(range(1,bufnr('$')),'buflisted(v:val)'))
-endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Keyboard mappings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-map <leader>tn :tabnew .<cr>
-
-" Set mapleader
-" let mapleader = ";"
-
-" Set localleader (for plugins)
-" let maplocalleader = ","
-
-" Update help
-map <leader>uh :helptags ~/.vim/doc<cr>
-
-" Run ctags
-" map <silent> <leader>r :!ctags -R --exclude=.svn --exclude=.git --exclude=log *<cr>
-
-" Show invisible characters
-" nmap <leader>l :set list!<cr>
 
 " Toggle NERDTree plugin
 " map <silent> <c-b> :NERDTreeToggle<cr>
@@ -479,76 +489,6 @@ let g:ctrlp_working_path_mode = 'a'
 " vnoremap <A-k> :m-2<cr>gv
 " Move visual selection down
 " vnoremap <A-j> :m'>+<cr>gv
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Autocommands
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Make sure autocommands are loaded only once
-if !exists("autocommands_loaded") && has("autocmd")
-   " Set noexpandtab automatically when editing makefiles
-   autocmd FileType make setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
-
-   " Reload vimrc after editing
-   autocmd BufWritePost ~/.vimrc source ~/.vimrc
-
-   " Automatically make shell scripts executable
-   autocmd BufWritePost *.sh call MakeExecutable()
-
-   " Enable spelling for *.txt files
-   autocmd BufRead,BufNewFile *.txt set spell
-
-   let autocommands_loaded=1
-endif
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Tip 80
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" When we reload, tell vim to restore the cursor to the saved position
-augroup JumpCursorOnEdit
-
-autocmd!
-
-autocmd BufReadPost *
-\ if expand("<afile>:p:h") !=? $TEMP |
-\ if line("'\"") > 1 && line("'\"") <= line("$") |
-\ let JumpCursorOnEdit_foo = line("'\"") |
-\ let b:doopenfold = 1 |
-\ if (foldlevel(JumpCursorOnEdit_foo) > foldlevel(JumpCursorOnEdit_foo - 1)) |
-\ let JumpCursorOnEdit_foo = JumpCursorOnEdit_foo - 1 |
-\ let b:doopenfold = 2 |
-\ endif |
-\ exe JumpCursorOnEdit_foo |
-\ endif |
-\ endif
-
-" Need to postpone using "zv" until after reading the modelines.
-autocmd BufWinEnter *
-\ if exists("b:doopenfold") |
-\ exe "normal zv" |
-\ if(b:doopenfold > 1) |
-\ exe "+".1 |
-\ endif |
-\ unlet b:doopenfold |
-\ endif
-augroup END
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Create backup and swap directories
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-if !isdirectory(&backupdir)
-   call mkdir(&backupdir)
-endif
-
-if exists("$VIM_SWAP_DIR") && !isdirectory($VIM_SWAP_DIR)
-   call mkdir($VIM_SWAP_DIR)
-endif
-
-if exists("$VIM_UNDO_DIR") && !isdirectory($VIM_UNDO_DIR)
-   call mkdir($VIM_UNDO_DIR)
-endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDTree plugin
