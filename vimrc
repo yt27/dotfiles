@@ -6,17 +6,6 @@
   let s:is_macvim = has('gui_macvim')
 "}}}
 
-" setup & neobundle {{{
-  set nocompatible
-  set all& "reset everything to their defaults
-  if s:is_windows
-    set rtp+=~/.vim
-  endif
-  set rtp+=~/.vim/bundle/neobundle.vim
-  call neobundle#begin(expand('~/.vim/bundle/'))
-  NeoBundleFetch 'Shougo/neobundle.vim'
-"}}}
-
 " functions {{{
   let s:cache_dir = '~/.vim/cache'
 
@@ -78,6 +67,176 @@
   endfunction
 "}}}
 
+" setup & neobundle {{{
+  set nocompatible
+  set all& "reset everything to their defaults
+  if s:is_windows
+    set rtp+=~/.vim
+  endif
+  set rtp+=~/.vim/bundle/neobundle.vim
+  call neobundle#begin(expand('~/.vim/bundle/'))
+  NeoBundleFetch 'Shougo/neobundle.vim'
+"}}}
+
+" plugin/mapping configuration {{{
+  NeoBundle 'a.vim' "{{{
+    " let g:alternateExtensions_cpp="hh"
+    " let g:alternateExtensions_hh="cpp"
+    let alternateSearchPath='sfr:../Src,sfr:../Inc,sfr:../source,sfr:../src,sfr:../include,sfr:../inc'
+  "}}}
+
+  NeoBundle 'jlanzarotta/bufexplorer'
+
+  NeoBundle 'chazy/cscope_maps'
+
+  NeoBundle 'xolox/vim-session' "{{{
+    " vim-session plugin
+    let g:session_autosave_periodic=1
+    let g:session_default_to_last=1
+  "}}}
+  NeoBundle 'xolox/vim-misc'
+
+  "NeoBundle 'ervandew/supertab'
+
+  NeoBundle 'taglist.vim' "{{{
+    " Toggle Tag list plugin
+    map <leader>tl :TlistToggle<cr>
+
+    let Tlist_Auto_Open=1
+    let Tlist_Exit_OnlyWindow=1
+    "let Tlist_Show_One_File=1
+    "let Tlist_Display_Prototype=1
+    let Tlist_File_Fold_Auto_Close=1
+    let Tlist_WinWidth = 40
+  "}}}
+
+  NeoBundle 'git://repo.or.cz/vcscommand'
+  
+  NeoBundle 'honza/vim-snippets'
+
+  NeoBundle 'Valloric/YouCompleteMe', {'vim_version':'7.3.584'} "{{{
+    let g:ycm_global_ycm_extra_conf = '~/.default_ycm_extra_conf.py'
+    let g:ycm_always_populate_location_list=1
+    let g:ycm_complete_in_comments=1
+    let g:ycm_collect_identifiers_from_comments_and_strings=1
+    let g:ycm_add_preview_to_completeopt=1
+    let g:ycm_autoclose_preview_window_after_completion=1
+
+    map <leader>yg :YcmComplete GoTo<cr>
+    map <leader>yd :YcmComplete GoToDeclaration<cr>
+    map <leader>yD :YcmComplete GoToDefinition<cr>
+  "}}}
+
+  NeoBundle 'SirVer/ultisnips' "{{{
+    " Trigger configuration. Do not use <tab> if you use
+    " https://github.com/Valloric/YouCompleteMe.
+    let g:UltiSnipsExpandTrigger="<leader><tab>"
+    let g:UltiSnipsJumpForwardTrigger="<leader><tab>"
+    let g:UltiSnipsJumpBackwardTrigger="<leader><s-tab>"
+
+    " " If you want :UltiSnipsEdit to split your window.
+    " let g:UltiSnipsEditSplit="vertical"
+  "}}}
+
+  NeoBundle 'tranngocthachs/gtags-cscope-vim-plugin'
+
+  NeoBundle 'vim-scripts/gtags.vim' "{{{
+    let GtagsCscope_Auto_Load = 1
+
+    " let GtagsCscope_Auto_Map = 1
+
+    let GtagsCscope_Quiet = 1
+
+    let GtagsCscope_Absolute_Path = 1
+  "}}}
+
+  NeoBundle 'Shougo/unite.vim' "{{{
+    let bundle = neobundle#get('unite.vim')
+    function! bundle.hooks.on_source(bundle)
+      call unite#filters#matcher_default#use(['matcher_fuzzy'])
+      call unite#filters#sorter_default#use(['sorter_rank'])
+      call unite#custom#source('line,outline','matchers','matcher_fuzzy')
+      call unite#custom#profile('default', 'context', {
+            \ 'start_insert': 1,
+            \ 'direction': 'botright',
+            \ })
+    endfunction
+
+    let g:unite_data_directory=s:get_cache_dir('unite')
+    let g:unite_source_history_yank_enable=1
+    let g:unite_source_rec_max_cache_files=5000
+
+    if executable('ag')
+      let g:unite_source_grep_command='ag'
+      let g:unite_source_grep_default_opts='--nocolor --line-numbers --nogroup -S -C4'
+      let g:unite_source_grep_recursive_opt=''
+    elseif executable('ack')
+      let g:unite_source_grep_command='ack'
+      let g:unite_source_grep_default_opts='--no-heading --no-color -C4'
+      let g:unite_source_grep_recursive_opt=''
+    endif
+
+    function! s:unite_settings()
+      nmap <buffer> Q <plug>(unite_exit)
+      nmap <buffer> <esc> <plug>(unite_exit)
+      imap <buffer> <esc> <plug>(unite_exit)
+    endfunction
+    autocmd FileType unite call s:unite_settings()
+
+    nmap <space> [unite]
+    nnoremap [unite] <nop>
+
+    if s:is_windows
+      nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec:! buffer file_mru bookmark<cr><c-u>
+      nnoremap <silent> [unite]f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec:!<cr><c-u>
+    else
+      nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async:! buffer file_mru bookmark<cr><c-u>
+      nnoremap <silent> [unite]f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async:!<cr><c-u>
+    endif
+    nnoremap <silent> [unite]e :<C-u>Unite -buffer-name=recent file_mru<cr>
+    nnoremap <silent> [unite]y :<C-u>Unite -buffer-name=yanks history/yank<cr>
+    nnoremap <silent> [unite]l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
+    nnoremap <silent> [unite]b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
+    nnoremap <silent> [unite]/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
+    nnoremap <silent> [unite]m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
+    nnoremap <silent> [unite]s :<C-u>Unite -quick-match buffer<cr>
+  "}}}
+
+  NeoBundle 'kmnk/vim-unite-svn'
+
+  NeoBundle 'Shougo/vimproc.vim', {
+    \ 'build': {
+      \ 'mac': 'make -f make_mac.mak',
+      \ 'unix': 'make -f make_unix.mak',
+      \ 'cygwin': 'make -f make_cygwin.mak',
+      \ 'windows': '"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\nmake.exe" make_msvc32.mak',
+    \ },
+  \ }
+
+  NeoBundle 'Shougo/neomru.vim'
+
+  NeoBundle 'Shougo/vimshell.vim'
+
+  NeoBundle 'mbbill/undotree'
+
+  NeoBundle 'tomtom/tcomment_vim'
+
+  NeoBundle 'terryma/vim-multiple-cursors'
+
+  NeoBundle 'Raimondi/delimitMate' "{{{
+    let g:delimitMate_expand_cr=1
+    let g:delimitMate_expand_space=1
+  "}}}
+"}}}
+
+" finish loading {{{
+  call neobundle#end()
+  filetype plugin indent on
+  syntax enable
+
+  NeoBundleCheck
+"}}}
+
 " base configuration {{{
   " Force 256 colors if xterm is in use or builtin_gui (vimperator workaround)
   if &term == "xterm" || &term == "builtin_gui"
@@ -135,8 +294,6 @@
   set cursorline
 
   set cscopetag
-
-  highlight Folded ctermbg=none ctermfg=darkmagenta
 
   " vim file/folder management {{{
     " persistent undo
@@ -225,6 +382,8 @@
 
   " Splitting a window will put the new window right of the current one.
   set splitright
+
+  highlight Folded ctermbg=none ctermfg=darkmagenta
 "}}}
 
 " gui {{{
@@ -320,157 +479,6 @@
   set t_vb=
 "}}}
 
-" plugin/mapping configuration {{{
-  NeoBundle 'a.vim' "{{{
-    " let g:alternateExtensions_cpp="hh"
-    " let g:alternateExtensions_hh="cpp"
-    let alternateSearchPath='sfr:../Src,sfr:../Inc,sfr:../source,sfr:../src,sfr:../include,sfr:../inc'
-  "}}}
-
-  NeoBundle 'jlanzarotta/bufexplorer'
-
-  NeoBundle 'chazy/cscope_maps'
-
-  NeoBundle 'xolox/vim-session' "{{{
-    " vim-session plugin
-    let g:session_autosave_periodic=1
-    let g:session_default_to_last=1
-  "}}}
-  NeoBundle 'xolox/vim-misc'
-
-  "NeoBundle 'ervandew/supertab'
-
-  NeoBundle 'taglist.vim' "{{{
-    " Toggle Tag list plugin
-    map <leader>tl :TlistToggle<cr>
-
-    let Tlist_Auto_Open=1
-    let Tlist_Exit_OnlyWindow=1
-    "let Tlist_Show_One_File=1
-    "let Tlist_Display_Prototype=1
-    let Tlist_File_Fold_Auto_Close=1
-    let Tlist_WinWidth = 40
-  "}}}
-
-  NeoBundle 'git://repo.or.cz/vcscommand'
-  
-  NeoBundle 'Valloric/YouCompleteMe', {'vim_version':'7.3.584'} "{{{
-    let g:ycm_global_ycm_extra_conf = '~/.default_ycm_extra_conf.py'
-    let g:ycm_always_populate_location_list=1
-    let g:ycm_complete_in_comments=1
-    let g:ycm_collect_identifiers_from_comments_and_strings=1
-    let g:ycm_add_preview_to_completeopt=1
-    let g:ycm_autoclose_preview_window_after_completion=1
-
-    map <leader>yg :YcmComplete GoTo<cr>
-    map <leader>yd :YcmComplete GoToDeclaration<cr>
-    map <leader>yD :YcmComplete GoToDefinition<cr>
-  "}}}
-
-  NeoBundle 'SirVer/ultisnips' "{{{
-    " Trigger configuration. Do not use <tab> if you use
-    " https://github.com/Valloric/YouCompleteMe.
-    let g:UltiSnipsExpandTrigger="<leader><tab>"
-    let g:UltiSnipsJumpForwardTrigger="<leader><tab>"
-    let g:UltiSnipsJumpBackwardTrigger="<leader><s-tab>"
-
-    " " If you want :UltiSnipsEdit to split your window.
-    " let g:UltiSnipsEditSplit="vertical"
-  "}}}
-
-  NeoBundle 'honza/vim-snippets'
-
-  NeoBundle 'tranngocthachs/gtags-cscope-vim-plugin'
-
-  NeoBundle 'vim-scripts/gtags.vim' "{{{
-    let GtagsCscope_Auto_Load = 1
-
-    " let GtagsCscope_Auto_Map = 1
-
-    let GtagsCscope_Quiet = 1
-
-    let GtagsCscope_Absolute_Path = 1
-  "}}}
-
-  NeoBundle 'Shougo/unite.vim' "{{{
-    let bundle = neobundle#get('unite.vim')
-    function! bundle.hooks.on_source(bundle)
-      call unite#filters#matcher_default#use(['matcher_fuzzy'])
-      call unite#filters#sorter_default#use(['sorter_rank'])
-      call unite#custom#source('line,outline','matchers','matcher_fuzzy')
-      call unite#custom#profile('default', 'context', {
-            \ 'start_insert': 1,
-            \ 'direction': 'botright',
-            \ })
-    endfunction
-
-    let g:unite_data_directory=s:get_cache_dir('unite')
-    let g:unite_source_history_yank_enable=1
-    let g:unite_source_rec_max_cache_files=5000
-
-    if executable('ag')
-      let g:unite_source_grep_command='ag'
-      let g:unite_source_grep_default_opts='--nocolor --line-numbers --nogroup -S -C4'
-      let g:unite_source_grep_recursive_opt=''
-    elseif executable('ack')
-      let g:unite_source_grep_command='ack'
-      let g:unite_source_grep_default_opts='--no-heading --no-color -C4'
-      let g:unite_source_grep_recursive_opt=''
-    endif
-
-    function! s:unite_settings()
-      nmap <buffer> Q <plug>(unite_exit)
-      nmap <buffer> <esc> <plug>(unite_exit)
-      imap <buffer> <esc> <plug>(unite_exit)
-    endfunction
-    autocmd FileType unite call s:unite_settings()
-
-    nmap <space> [unite]
-    nnoremap [unite] <nop>
-
-    if s:is_windows
-      nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec:! buffer file_mru bookmark<cr><c-u>
-      nnoremap <silent> [unite]f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec:!<cr><c-u>
-    else
-      nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async:! buffer file_mru bookmark<cr><c-u>
-      nnoremap <silent> [unite]f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async:!<cr><c-u>
-    endif
-    nnoremap <silent> [unite]e :<C-u>Unite -buffer-name=recent file_mru<cr>
-    nnoremap <silent> [unite]y :<C-u>Unite -buffer-name=yanks history/yank<cr>
-    nnoremap <silent> [unite]l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
-    nnoremap <silent> [unite]b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
-    nnoremap <silent> [unite]/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
-    nnoremap <silent> [unite]m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
-    nnoremap <silent> [unite]s :<C-u>Unite -quick-match buffer<cr>
-  "}}}
-
-  NeoBundle 'kmnk/vim-unite-svn'
-
-  NeoBundle 'Shougo/vimproc.vim', {
-    \ 'build': {
-      \ 'mac': 'make -f make_mac.mak',
-      \ 'unix': 'make -f make_unix.mak',
-      \ 'cygwin': 'make -f make_cygwin.mak',
-      \ 'windows': '"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\nmake.exe" make_msvc32.mak',
-    \ },
-  \ }
-
-  NeoBundle 'Shougo/neomru.vim'
-
-  NeoBundle 'Shougo/vimshell.vim'
-
-  NeoBundle 'mbbill/undotree'
-
-  NeoBundle 'tomtom/tcomment_vim'
-
-  NeoBundle 'terryma/vim-multiple-cursors'
-
-  NeoBundle 'Raimondi/delimitMate' "{{{
-    let g:delimitMate_expand_cr=1
-    let g:delimitMate_expand_space=1
-  "}}}
-"}}}
-
 " mapping {{{
   map <leader>tn :tabnew .<cr>
 
@@ -508,13 +516,4 @@
 
     let autocommands_loaded=1
   endif "}}}
-"}}}
-
-" finish loading {{{
-  call neobundle#end()
-  filetype plugin indent on
-  syntax enable
-  "exec 'colorscheme '.s:settings.colorscheme
-
-  NeoBundleCheck
 "}}}
