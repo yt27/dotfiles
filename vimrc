@@ -178,13 +178,6 @@
       let g:unite_source_grep_recursive_opt=''
     endif
 
-    function! s:unite_settings()
-      nmap <buffer> Q <plug>(unite_exit)
-      nmap <buffer> <esc> <plug>(unite_exit)
-      imap <buffer> <esc> <plug>(unite_exit)
-    endfunction
-    autocmd FileType unite call s:unite_settings()
-
     nmap <space> [unite]
     nnoremap [unite] <nop>
 
