@@ -133,9 +133,11 @@
     let g:UltiSnipsExpandTrigger="<leader><tab>"
     let g:UltiSnipsJumpForwardTrigger="<leader><tab>"
     let g:UltiSnipsJumpBackwardTrigger="<leader><s-tab>"
+    let g:UltiSnipsListSnippets="<leader>sn"
+    let g:UltiSnipsSnippetDirectories=["snips-private", "UltiSnips"]
 
     " " If you want :UltiSnipsEdit to split your window.
-    " let g:UltiSnipsEditSplit="vertical"
+    let g:UltiSnipsEditSplit="vertical"
   "}}}
 
   NeoBundle 'tranngocthachs/gtags-cscope-vim-plugin'
