@@ -420,10 +420,10 @@
   set statusline+=/%-3.3{CountBuffers()}
 
   " Append filename
-  set statusline+=%F\
+  set statusline+=%F
 
   " Append filetype
-  set statusline+=\[%{strlen(&ft)?&ft:'none'},
+  set statusline+=\ \[%{strlen(&ft)?&ft:'none'},
 
   " Append encoding
   set statusline+=%{&encoding},
@@ -439,20 +439,15 @@
 
   " Set git branch info
   " set statusline+=%(%{GitBranchInfoString()}\ %)
-  " Append line number, column number, virtual column number
-  set statusline+=%l,%c
+
+  " Append line number, column number, percentage
+  set statusline+=%l:%c\ \(%p%%\)
 
   " Separator
-  set statusline+=\ \ \|\ \
-
-  " Append percentage through file of displayed window
-  set statusline+=%3p%%
-
-  " Separator
-  set statusline+=\ \ \|\ \
+  set statusline+=\ \|\ 
 
   " Append value of byte under cursor in hexadecimal
-  set statusline+=0x%-2B
+  set statusline+=char\ 0x%-2B
 "}}}
 
 " search {{{
