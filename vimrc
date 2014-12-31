@@ -85,8 +85,6 @@
     let alternateSearchPath='sfr:../Src,sfr:../Inc,sfr:../source,sfr:../src,sfr:../include,sfr:../inc'
   "}}}
 
-  NeoBundle 'jlanzarotta/bufexplorer'
-
   NeoBundle 'chazy/cscope_maps'
 
   NeoBundle 'xolox/vim-session' "{{{
@@ -96,13 +94,11 @@
   "}}}
   NeoBundle 'xolox/vim-misc'
 
-  "NeoBundle 'ervandew/supertab'
-
   NeoBundle 'taglist.vim' "{{{
     " Toggle Tag list plugin
     map <leader>tl :TlistToggle<cr>
 
-    let Tlist_Auto_Open=1
+    let Tlist_Auto_Open=0
     let Tlist_Exit_OnlyWindow=1
     "let Tlist_Show_One_File=1
     "let Tlist_Display_Prototype=1
@@ -215,7 +211,9 @@
 
   NeoBundle 'Shougo/vimshell.vim'
 
-  NeoBundle 'mbbill/undotree'
+  NeoBundle 'mbbill/undotree' "{{{{
+    nmap <leader>ut :UndotreeToggle<cr>
+  "}}}}
 
   NeoBundle 'tomtom/tcomment_vim'
 
@@ -474,6 +472,13 @@
 
 " mapping {{{
   map <leader>tn :tabnew .<cr>
+
+  map <leader>wq :quit<cr>
+  map <leader>ww :write<cr>
+  map <leader>ws :split<cr>
+  map <leader>wv :vsplit<cr>
+
+  map <leader>s :set spell!<cr>
 
   " Show invisible characters
   nmap <leader>l :set list!<cr>
