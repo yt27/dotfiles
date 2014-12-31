@@ -195,6 +195,7 @@
     nnoremap <silent> [unite]/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
     nnoremap <silent> [unite]m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
     nnoremap <silent> [unite]s :<C-u>Unite -quick-match buffer<cr>
+    nnoremap <silent> [unite]o :<C-u>Unite -buffer-name=outline outline<cr>
   "}}}
 
   NeoBundle 'kmnk/vim-unite-svn'
@@ -207,6 +208,8 @@
       \ 'windows': '"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\nmake.exe" make_msvc32.mak',
     \ },
   \ }
+
+  NeoBundle 'Shougo/unite-outline'
 
   NeoBundle 'Shougo/neomru.vim'
 
