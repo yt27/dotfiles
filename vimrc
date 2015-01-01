@@ -224,6 +224,16 @@
     let g:delimitMate_expand_cr = 1
     let g:delimitMate_expand_space = 1
   "}}}
+
+  NeoBundle 'tpope/vim-surround'
+  NeoBundle 'tpope/vim-dispatch'
+
+  NeoBundleLazy 'pangloss/vim-javascript', {'autoload':{'filetypes':['javascript']}}
+  NeoBundleLazy 'leshill/vim-json', {'autoload':{'filetypes':['javascript','json']}}
+
+  NeoBundle 'mhinz/vim-signify' "{{{
+    let g:signify_update_on_bufenter = 0
+  "}}}
 "}}}
 
 " finish loading {{{
@@ -359,9 +369,6 @@
   " Show (partial) command in the last line of the screen.
   set showcmd
 
-  " Try to use colors that look good on a dark background
-  set background=dark
-
   " Minimal number of screen lines to keep above and below the cursor
   set scrolloff=5
 
@@ -377,6 +384,9 @@
   " Show invisible chars
   set list
   set listchars=tab:❯•,trail:•,extends:❯,precedes:❮,eol:$
+
+  " Try to use colors that look good on a dark background
+  set background=dark
 
   " Set colorscheme
   colorscheme desert
