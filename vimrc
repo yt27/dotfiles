@@ -374,6 +374,10 @@
   " fold according to syntax hl rules
   set foldmethod=syntax
 
+  " Show invisible chars
+  set list
+  set listchars=tab:❯•,trail:•,extends:❯,precedes:❮,eol:$
+
   " Set colorscheme
   colorscheme desert
 
