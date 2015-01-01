@@ -185,14 +185,28 @@
       nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async:! buffer file_mru bookmark<cr><c-u>
       nnoremap <silent> [unite]f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async:!<cr><c-u>
     endif
-    nnoremap <silent> [unite]e :<C-u>Unite -buffer-name=recent file_mru<cr>
     nnoremap <silent> [unite]y :<C-u>Unite -buffer-name=yanks history/yank<cr>
     nnoremap <silent> [unite]l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
     nnoremap <silent> [unite]b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
     nnoremap <silent> [unite]/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
     nnoremap <silent> [unite]m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
     nnoremap <silent> [unite]s :<C-u>Unite -quick-match buffer<cr>
-    nnoremap <silent> [unite]o :<C-u>Unite -buffer-name=outline outline<cr>
+  "}}}
+
+  NeoBundleLazy 'Shougo/neomru.vim', {'autoload':{'unite_sources':'file_mru'}} "{{{
+    nnoremap <silent> [unite]e :<C-u>Unite -buffer-name=recent file_mru<cr>
+  "}}}
+
+  NeoBundleLazy 'tsukkee/unite-tag', {'autoload':{'unite_sources':['tag','tag/file']}} "{{{
+    nnoremap <silent> [unite]t :<C-u>Unite -auto-resize -buffer-name=tag tag tag/file<cr>
+  "}}}
+
+  NeoBundleLazy 'Shougo/unite-outline', {'autoload':{'unite_sources':'outline'}} "{{{
+    nnoremap <silent> [unite]o :<C-u>Unite -auto-resize -buffer-name=outline outline<cr>
+  "}}}
+
+  NeoBundleLazy 'Shougo/unite-help', {'autoload':{'unite_sources':'help'}} "{{{
+    nnoremap <silent> [unite]h :<C-u>Unite -auto-resize -buffer-name=help help<cr>
   "}}}
 
   NeoBundle 'kmnk/vim-unite-svn'
@@ -206,10 +220,6 @@
     \ },
   \ }
 
-  NeoBundle 'Shougo/unite-outline'
-
-  NeoBundle 'Shougo/neomru.vim'
-
   NeoBundle 'Shougo/vimshell.vim'
 
   NeoBundle 'mbbill/undotree' "{{{{
@@ -220,10 +230,7 @@
 
   NeoBundle 'terryma/vim-multiple-cursors'
 
-  NeoBundle 'Raimondi/delimitMate' "{{{
-    let g:delimitMate_expand_cr = 1
-    let g:delimitMate_expand_space = 1
-  "}}}
+  NeoBundle 'jiangmiao/auto-pairs'
 
   NeoBundle 'tpope/vim-surround'
   NeoBundle 'tpope/vim-dispatch'
@@ -234,6 +241,31 @@
   NeoBundle 'mhinz/vim-signify' "{{{
     let g:signify_update_on_bufenter = 0
   "}}}
+
+  NeoBundle 'terryma/vim-expand-region'
+
+  NeoBundle 'justinmk/vim-sneak' "{{{
+    let g:sneak#streak = 1
+  "}}}
+
+  NeoBundle 'nathanaelkane/vim-indent-guides' "{{{
+    let g:indent_guides_start_level=1
+    let g:indent_guides_guide_size=1
+    let g:indent_guides_enable_on_vim_startup=0
+    let g:indent_guides_color_change_percent=3
+    if !has('gui_running')
+      let g:indent_guides_auto_colors=0
+      function! s:indent_set_console_colors()
+        hi IndentGuidesOdd ctermbg=235
+        hi IndentGuidesEven ctermbg=236
+      endfunction
+      autocmd VimEnter,Colorscheme * call s:indent_set_console_colors()
+    endif
+  "}}}
+
+  NeoBundleLazy 'guns/xterm-color-table.vim', {'autoload':{'commands':'XtermColorTable'}}
+
+  nnoremap <leader>nbu :Unite neobundle/update -vertical -no-start-insert<cr>
 "}}}
 
 " finish loading {{{
