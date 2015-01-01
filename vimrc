@@ -22,13 +22,13 @@
 
   function! Preserve(command) "{{{
     " preparation: save last search, and cursor position.
-    let _s=@/
+    let _s = @/
     let l = line(".")
     let c = col(".")
     " do the business:
     execute a:command
     " clean up: restore previous search history, and cursor position
-    let @/=_s
+    let @/ = _s
     call cursor(l, c)
   endfunction "}}}
 
@@ -80,17 +80,16 @@
 
 " plugin/mapping configuration {{{
   NeoBundle 'a.vim' "{{{
-    " let g:alternateExtensions_cpp="hh"
-    " let g:alternateExtensions_hh="cpp"
-    let alternateSearchPath='sfr:../Src,sfr:../Inc,sfr:../source,sfr:../src,sfr:../include,sfr:../inc'
+    let g:alternateSearchPath = 'reg:/include/src/g/,reg:/src/include/g/'
+    let g:alternateNoDefaultAlternate = 1
   "}}}
 
   NeoBundle 'chazy/cscope_maps'
 
   NeoBundle 'xolox/vim-session' "{{{
     " vim-session plugin
-    let g:session_autosave_periodic=1
-    let g:session_default_to_last=1
+    let g:session_autosave_periodic = 1
+    let g:session_default_to_last = 1
   "}}}
   NeoBundle 'xolox/vim-misc'
 
@@ -98,11 +97,11 @@
     " Toggle Tag list plugin
     map <leader>tl :TlistToggle<cr>
 
-    let Tlist_Auto_Open=0
-    let Tlist_Exit_OnlyWindow=1
-    "let Tlist_Show_One_File=1
-    "let Tlist_Display_Prototype=1
-    let Tlist_File_Fold_Auto_Close=1
+    let Tlist_Auto_Open = 0
+    let Tlist_Exit_OnlyWindow = 1
+    "let Tlist_Show_One_File = 1
+    "let Tlist_Display_Prototype = 1
+    let Tlist_File_Fold_Auto_Close = 1
     let Tlist_WinWidth = 40
   "}}}
 
@@ -112,11 +111,13 @@
 
   NeoBundle 'Valloric/YouCompleteMe', {'vim_version':'7.3.584'} "{{{
     let g:ycm_global_ycm_extra_conf = '~/.default_ycm_extra_conf.py'
-    let g:ycm_always_populate_location_list=1
-    let g:ycm_complete_in_comments=1
-    let g:ycm_collect_identifiers_from_comments_and_strings=1
-    let g:ycm_add_preview_to_completeopt=1
-    let g:ycm_autoclose_preview_window_after_completion=1
+    let g:ycm_always_populate_location_list = 1
+    let g:ycm_complete_in_comments = 1
+    let g:ycm_collect_identifiers_from_comments_and_strings = 1
+    let g:ycm_add_preview_to_completeopt = 1
+    let g:ycm_autoclose_preview_window_after_completion = 1
+    let g:ycm_confirm_extra_conf = 0
+    let g:ycm_goto_buffer_command = 'horizontal-split'
 
     map <leader>yg :YcmComplete GoTo<cr>
     map <leader>yd :YcmComplete GoToDeclaration<cr>
@@ -126,14 +127,14 @@
   NeoBundle 'SirVer/ultisnips' "{{{
     " Trigger configuration. Do not use <tab> if you use
     " https://github.com/Valloric/YouCompleteMe.
-    let g:UltiSnipsExpandTrigger="<leader><tab>"
-    let g:UltiSnipsJumpForwardTrigger="<leader><tab>"
-    let g:UltiSnipsJumpBackwardTrigger="<leader><s-tab>"
-    let g:UltiSnipsListSnippets="<leader>sn"
-    let g:UltiSnipsSnippetDirectories=["snips-private", "UltiSnips"]
+    let g:UltiSnipsExpandTrigger = "<leader><tab>"
+    let g:UltiSnipsJumpForwardTrigger = "<leader><tab>"
+    let g:UltiSnipsJumpBackwardTrigger = "<leader><s-tab>"
+    let g:UltiSnipsListSnippets = "<leader>sn"
+    let g:UltiSnipsSnippetDirectories = ["snips-private", "UltiSnips"]
 
     " " If you want :UltiSnipsEdit to split your window.
-    let g:UltiSnipsEditSplit="vertical"
+    let g:UltiSnipsEditSplit = "vertical"
   "}}}
 
   NeoBundle 'tranngocthachs/gtags-cscope-vim-plugin'
@@ -160,18 +161,18 @@
             \ })
     endfunction
 
-    let g:unite_data_directory=s:get_cache_dir('unite')
-    let g:unite_source_history_yank_enable=1
-    let g:unite_source_rec_max_cache_files=5000
+    let g:unite_data_directory = s:get_cache_dir('unite')
+    let g:unite_source_history_yank_enable = 1
+    let g:unite_source_rec_max_cache_files = 5000
 
     if executable('ag')
-      let g:unite_source_grep_command='ag'
-      let g:unite_source_grep_default_opts='--nocolor --line-numbers --nogroup -S'
-      let g:unite_source_grep_recursive_opt=''
+      let g:unite_source_grep_command = 'ag'
+      let g:unite_source_grep_default_opts = '--nocolor --line-numbers --nogroup -S'
+      let g:unite_source_grep_recursive_opt = ''
     elseif executable('ack')
-      let g:unite_source_grep_command='ack'
-      let g:unite_source_grep_default_opts='--no-heading --no-color'
-      let g:unite_source_grep_recursive_opt=''
+      let g:unite_source_grep_command = 'ack'
+      let g:unite_source_grep_default_opts = '--no-heading --no-color'
+      let g:unite_source_grep_recursive_opt = ''
     endif
 
     nmap <space> [unite]
@@ -220,8 +221,8 @@
   NeoBundle 'terryma/vim-multiple-cursors'
 
   NeoBundle 'Raimondi/delimitMate' "{{{
-    let g:delimitMate_expand_cr=1
-    let g:delimitMate_expand_space=1
+    let g:delimitMate_expand_cr = 1
+    let g:delimitMate_expand_space = 1
   "}}}
 "}}}
 
@@ -512,6 +513,6 @@
     autocmd FileType markdown setlocal nolist
     autocmd FileType vim setlocal fdm=indent keywordprg=:help
 
-    let autocommands_loaded=1
+    let autocommands_loaded = 1
   endif "}}}
 "}}}
