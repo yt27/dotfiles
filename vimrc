@@ -415,7 +415,7 @@
 
   " Show invisible chars
   set list
-  set listchars=tab:>~,trail:~,extends:>,precedes:<,eol:$
+  set listchars=tab:>~,trail:~,extends:>,precedes:<
 
   " Try to use colors that look good on a dark background
   set background=dark
