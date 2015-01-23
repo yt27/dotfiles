@@ -157,7 +157,7 @@
       call unite#custom#source('line,outline','matchers','matcher_fuzzy')
       call unite#custom#profile('default', 'context', {
             \ 'start_insert': 1,
-            \ 'direction': 'botright',
+            \ 'direction': 'topleft',
             \ })
     endfunction
 
@@ -518,6 +518,10 @@
 "}}}
 
 " mapping {{{
+  " smash escape
+  inoremap jk <esc>
+  inoremap kj <esc>
+
   map <leader>tn :tabnew .<cr>
 
   map <leader>wq :quit<cr>
