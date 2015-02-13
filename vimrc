@@ -238,10 +238,6 @@
   NeoBundleLazy 'pangloss/vim-javascript', {'autoload':{'filetypes':['javascript']}}
   NeoBundleLazy 'leshill/vim-json', {'autoload':{'filetypes':['javascript','json']}}
 
-  NeoBundle 'mhinz/vim-signify' "{{{
-    let g:signify_update_on_bufenter = 0
-  "}}}
-
   NeoBundle 'terryma/vim-expand-region'
 
   NeoBundle 'justinmk/vim-sneak' "{{{
