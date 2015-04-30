@@ -84,6 +84,8 @@
     let g:alternateNoDefaultAlternate = 1
   "}}}
 
+  NeoBundle 'tpope/vim-repeat'
+
   NeoBundle 'chazy/cscope_maps'
 
   NeoBundle 'xolox/vim-session' "{{{
@@ -231,6 +233,8 @@
   NeoBundle 'terryma/vim-multiple-cursors'
 
   NeoBundle 'jiangmiao/auto-pairs'
+
+  NeoBundle 'edsono/vim-matchit'
 
   NeoBundle 'tpope/vim-surround'
   NeoBundle 'tpope/vim-dispatch'
