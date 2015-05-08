@@ -86,14 +86,9 @@
 
   NeoBundle 'tpope/vim-repeat'
 
-  NeoBundle 'chazy/cscope_maps'
+  NeoBundle 'tpope/vim-obsession'
 
-  NeoBundle 'xolox/vim-session' "{{{
-    " vim-session plugin
-    let g:session_autosave_periodic = 1
-    let g:session_default_to_last = 1
-  "}}}
-  NeoBundle 'xolox/vim-misc'
+  NeoBundle 'chazy/cscope_maps'
 
   NeoBundle 'taglist.vim' "{{{
     " Toggle Tag list plugin
