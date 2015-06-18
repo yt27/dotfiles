@@ -227,7 +227,7 @@
 
   NeoBundle 'terryma/vim-multiple-cursors'
 
-  NeoBundle 'jiangmiao/auto-pairs'
+  "NeoBundle 'jiangmiao/auto-pairs'
 
   NeoBundle 'edsono/vim-matchit'
 
