@@ -108,6 +108,8 @@
 
   NeoBundle 'Valloric/YouCompleteMe', {'vim_version':'7.3.584'} "{{{
     let g:ycm_global_ycm_extra_conf = '~/.default_ycm_extra_conf.py'
+    let g:ycm_auto_trigger = 1
+    "let g:ycm_key_invoke_completion = '<tab>'
     let g:ycm_always_populate_location_list = 1
     let g:ycm_complete_in_comments = 1
     let g:ycm_collect_identifiers_from_comments_and_strings = 1
@@ -260,6 +262,32 @@
 
   NeoBundleLazy 'guns/xterm-color-table.vim', {'autoload':{'commands':'XtermColorTable'}}
 
+  NeoBundle 'vim-scripts/multisearch.vim' "{{{
+    function! s:initMsearch()
+      " Add your Msearch initialization commands here ...
+      Msearch highlight add ctermbg=blue
+      Msearch highlight add ctermbg=yellow
+      Msearch highlight add ctermbg=green
+      Msearch highlight add ctermbg=cyan
+      Msearch highlight add ctermbg=magenta
+      Msearch highlight add ctermbg=lightyellow
+      Msearch highlight add ctermbg=lightred
+      Msearch highlight add ctermbg=lightgreen
+      Msearch highlight add ctermbg=lightcyan
+      Msearch highlight add ctermbg=lightmagenta
+      Msearch highlight add ctermbg=lightgray
+      Msearch highlight add ctermbg=brown
+      Msearch highlight add ctermbg=darkgreen
+      Msearch highlight add ctermbg=darkmagenta
+      Msearch highlight add ctermbg=darkred
+
+      map <leader>m/ :Msearch add 
+      map <leader>mn :Msearch next<cr>
+      map <leader>mN :Msearch previous<cr>
+    endfunction
+    autocmd VimEnter * call s:initMsearch()
+  "}}}
+
   nnoremap <leader>nbu :Unite neobundle/update -vertical -no-start-insert<cr>
 "}}}
 
@@ -273,7 +301,7 @@
 
 " base configuration {{{
   " Force 256 colors if xterm is in use or builtin_gui (vimperator workaround)
-  if &term == "xterm" || &term == "builtin_gui"
+  if &term == "xterm" || &term == "builtin_gui" || &term == "screen-256color"
      set t_Co=256
   endif
 
