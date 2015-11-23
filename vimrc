@@ -65,6 +65,51 @@
   function! CountBuffers()
     return len(filter(range(1,bufnr('$')),'buflisted(v:val)'))
   endfunction
+
+  " http://vim.wikia.com/wiki/Move_current_window_between_tabs
+  function! MoveToPrevTab()
+    "there is only one window
+    if tabpagenr('$') == 1 && winnr('$') == 1
+      return
+    endif
+    "preparing new window
+    let l:tab_nr = tabpagenr('$')
+    let l:cur_buf = bufnr('%')
+    if tabpagenr() != 1
+      close!
+      if l:tab_nr == tabpagenr('$')
+        tabprev
+      endif
+      sp
+    else
+      close!
+      exe "0tabnew"
+    endif
+    "opening current buffer in new window
+    exe "b".l:cur_buf
+  endfunc
+
+  function! MoveToNextTab()
+    "there is only one window
+    if tabpagenr('$') == 1 && winnr('$') == 1
+      return
+    endif
+    "preparing new window
+    let l:tab_nr = tabpagenr('$')
+    let l:cur_buf = bufnr('%')
+    if tabpagenr() < tab_nr
+      close!
+      if l:tab_nr == tabpagenr('$')
+        tabnext
+      endif
+      sp
+    else
+      close!
+      tabnew
+    endif
+    "opening current buffer in new window
+    exe "b".l:cur_buf
+  endfunc
 "}}}
 
 " setup & neobundle {{{
@@ -289,6 +334,25 @@
   "}}}
 
   nnoremap <leader>nbu :Unite neobundle/update -vertical -no-start-insert<cr>
+
+  NeoBundle 'Mark' "{{{
+  "}}}
+
+  NeoBundle 'zhaocai/GoldenView.Vim' "{{{
+    let g:goldenview__enable_at_startup = 0
+
+    " 1. split to tiled windows
+    nmap <silent> <C-L>  <Plug>GoldenViewSplit
+
+    " 2. quickly switch current window with the main pane
+    " and toggle back
+    nmap <silent> <F8>   <Plug>GoldenViewSwitchMain
+    nmap <silent> <S-F8> <Plug>GoldenViewSwitchToggle
+
+    " 3. jump to next and previous window
+    nmap <silent> <C-N>  <Plug>GoldenViewNext
+    nmap <silent> <C-P>  <Plug>GoldenViewPrevious
+  "}}}
 "}}}
 
 " finish loading {{{
@@ -556,6 +620,9 @@
 
   " Show invisible characters
   nmap <leader>l :set list!<cr>
+
+  nnoremap <C-w>. :call MoveToNextTab()<CR>
+  nnoremap <C-w>, :call MoveToPrevTab()<CR>
 "}}}
 
 " autocommand {{{
