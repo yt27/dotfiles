@@ -17,3 +17,10 @@ alias rm='rm -i'
 alias cp='cp -ir'
 alias mv='mv -i'
 alias scp='scp -r'
+
+PATH=$HOME/git/git/contrib/workdir:$PATH
+export PATH
+
+unset TMUX
+
+export EDITOR=vim
