@@ -18,7 +18,7 @@ alias cp='cp -ir'
 alias mv='mv -i'
 alias scp='scp -r'
 
-PATH=$HOME/tmux/bin:$PATH
+PATH=$HOME/local/tmux/bin:$PATH
 PATH=$HOME/git/git/contrib/workdir:$PATH
 export PATH
 
