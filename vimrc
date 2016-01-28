@@ -290,19 +290,22 @@
     let g:sneak#streak = 0
   "}}}
 
-  NeoBundle 'nathanaelkane/vim-indent-guides' "{{{
-    let g:indent_guides_start_level=1
-    let g:indent_guides_guide_size=1
-    let g:indent_guides_enable_on_vim_startup=1
-    let g:indent_guides_color_change_percent=3
-    if !has('gui_running')
-      let g:indent_guides_auto_colors=0
-      function! s:indent_set_console_colors()
-        hi IndentGuidesOdd ctermbg=235
-        hi IndentGuidesEven ctermbg=236
-      endfunction
-      autocmd VimEnter,Colorscheme * call s:indent_set_console_colors()
-    endif
+  " NeoBundle 'nathanaelkane/vim-indent-guides' "{{{
+  "   let g:indent_guides_start_level=1
+  "   let g:indent_guides_guide_size=1
+  "   let g:indent_guides_enable_on_vim_startup=1
+  "   let g:indent_guides_color_change_percent=3
+  "   if !has('gui_running')
+  "     let g:indent_guides_auto_colors=0
+  "     function! s:indent_set_console_colors()
+  "       hi IndentGuidesOdd ctermbg=235
+  "       hi IndentGuidesEven ctermbg=236
+  "     endfunction
+  "     autocmd VimEnter,Colorscheme * call s:indent_set_console_colors()
+  "   endif
+  "}}}
+
+  NeoBundle 'Yggdroot/indentLine' "{{{
   "}}}
 
   NeoBundleLazy 'guns/xterm-color-table.vim', {'autoload':{'commands':'XtermColorTable'}}
@@ -335,7 +338,8 @@
 
   nnoremap <leader>nbu :Unite neobundle/update -vertical -no-start-insert<cr>
 
-  NeoBundle 'Mark' "{{{
+  NeoBundle 'jrosiek/vim-mark' "{{{
+    let g:mwDefaultHighlightingPalette = 'maximum'
   "}}}
 
   NeoBundle 'zhaocai/GoldenView.Vim' "{{{
@@ -649,9 +653,10 @@
     autocmd FileType js,scss,css autocmd BufWritePre <buffer> call StripTrailingWhitespace()
     autocmd FileType css,scss setlocal foldmethod=marker foldmarker={,}
     autocmd FileType css,scss nnoremap <silent> <leader>S vi{:sort<CR>
-    autocmd FileType python setlocal foldmethod=indent
+    autocmd FileType python setlocal foldmethod=indent tabstop=2 softtabstop=2 shiftwidth=2 expandtab
     autocmd FileType markdown setlocal nolist
     autocmd FileType vim setlocal fdm=indent keywordprg=:help
+    autocmd FileType cpp set iskeyword-=:
 
     let autocommands_loaded = 1
   endif "}}}
