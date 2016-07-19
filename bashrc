@@ -12,7 +12,11 @@ P_CYAN="\e[36m\]"
 
 PS1="${P_CYAN}[\t][\u@\h][\w]${P_DEFAULT}\n"
 
-alias ls='ls --color -l -F'
+if [ "`uname -s`" == "Darwin" ]; then
+  alias ls='ls -G -l -F'
+else
+  alias ls='ls --color -l -F'
+fi
 alias rm='rm -i'
 alias cp='cp -ir'
 alias mv='mv -i'
