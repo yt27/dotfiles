@@ -23,7 +23,8 @@ alias mv='mv -i'
 alias scp='scp -r'
 
 PATH=$HOME/local/tmux/bin:$PATH
-PATH=$HOME/git/git/contrib/workdir:$PATH
+PATH=$HOME/local/rtags/bin:$PATH
+PATH=$HOME/Development/git/git/contrib/workdir:$PATH
 export PATH
 
 unset TMUX
