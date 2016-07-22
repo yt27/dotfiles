@@ -357,6 +357,12 @@
     nmap <silent> <C-N>  <Plug>GoldenViewNext
     nmap <silent> <C-P>  <Plug>GoldenViewPrevious
   "}}}
+
+  NeoBundle 'lyuts/vim-rtags' "{{{
+    let g:rtagsUserLocationList = 0
+    nnoremap <silent> [unite]rr :<C-u>Unite -buffer-name=rtagsRef rtags/references<cr>
+    nnoremap <silent> [unite]rs :<C-u>Unite -buffer-name=rtagsSymbol rtags/symbol<cr>
+  "}}}
 "}}}
 
 " finish loading {{{
