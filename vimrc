@@ -363,6 +363,14 @@
     nnoremap <silent> [unite]rr :<C-u>Unite -buffer-name=rtagsRef rtags/references<cr>
     nnoremap <silent> [unite]rs :<C-u>Unite -buffer-name=rtagsSymbol rtags/symbol<cr>
   "}}}
+
+  NeoBundle 'hewes/unite-gtags' "{{{
+    nnoremap <silent> [unite]gc :<C-u>Unite -buffer-name=gtagsContext gtags/context<cr>
+    nnoremap <silent> [unite]gr :<C-u>Unite -buffer-name=gtagsRef gtags/ref<cr>
+    nnoremap <silent> [unite]gd :<C-u>Unite -buffer-name=gtagsDef gtags/def<cr>
+    nnoremap <silent> [unite]gg :<C-u>Unite -buffer-name=gtagsGrep gtags/grep<cr>
+    nnoremap <silent> [unite]gp :<C-u>Unite -buffer-name=gtagsPath gtags/path<cr>
+  "}}}
 "}}}
 
 " finish loading {{{
