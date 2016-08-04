@@ -1,0 +1,8 @@
+[user]
+  email = ytakebuchi@netflix.com
+  name = Yusuke Takebuchi
+
+[alias]
+  # From http://durdn.com/blog/2012/11/22/must-have-git-aliases-advanced-examples/
+  ls = log --graph --pretty=format:"%Cblue[%ci]%C(yellow)[%h%Cred%d%C(yellow)]\\ %Creset%s%Cblue\\ [%cn]" --decorate
+  ll = log --graph --pretty=format:"%Cblue[%ci]%C(yellow)[%h%Cred%d%C(yellow)]\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
