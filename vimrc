@@ -435,7 +435,7 @@
   set nostartofline
 
   " Highlight the screen line of the cursor
-  " set cursorline
+  set cursorline
 
   set cscopetag
 
