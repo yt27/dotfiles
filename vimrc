@@ -163,6 +163,32 @@
         "let g:clang_use_library = 1
       "}}}
 
+      call dein#add('itchyny/lightline.vim') "{{{
+        let g:lightline = {
+            \ 'colorscheme': 'wombat',
+            \ 'active': {
+            \   'left': [ [ 'mode', 'paste' ],
+            \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+            \ },
+            \ 'component': {
+            \   'readonly': '%{&filetype=="help"?"":&readonly?"⭤":""}',
+            \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
+            \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
+            \ },
+            \ 'component_visible_condition': {
+            \   'readonly': '(&filetype!="help"&& &readonly)',
+            \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+            \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+            \ },
+            \ 'separator': { 'left': '', 'right': '' },
+            \ 'subseparator': { 'left': '', 'right': '' }
+          \ }
+      "}}}
+
+      call dein#add('edkolev/tmuxline.vim')
+
+      call dein#add('tpope/vim-fugitive')
+
       call dein#add('vim-scripts/a.vim') "{{{
         let g:alternateSearchPath = 'reg:/include/src/g/,reg:/src/include/g/'
         let g:alternateNoDefaultAlternate = 1
