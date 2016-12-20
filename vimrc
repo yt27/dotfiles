@@ -154,6 +154,8 @@
 
       call dein#add('zchee/deoplete-jedi')
 
+      "call dein#add('LuXuryPro/deoplete-rtags')
+
       call dein#add('Rip-Rip/clang_complete') "{{{
         let g:clang_library_path='/usr/lib/llvm-3.8/lib'
         let g:clang_complete_auto = 0
@@ -163,26 +165,61 @@
         "let g:clang_use_library = 1
       "}}}
 
+      call dein#add('lyuts/vim-rtags') "{{{
+        let g:rtagsUserLocationList = 0
+      "}}}
+
       call dein#add('itchyny/lightline.vim') "{{{
         let g:lightline = {
             \ 'colorscheme': 'wombat',
             \ 'active': {
             \   'left': [ [ 'mode', 'paste' ],
-            \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+            \             [ 'fugitive', 'filename' ] ]
             \ },
-            \ 'component': {
-            \   'readonly': '%{&filetype=="help"?"":&readonly?"⭤":""}',
-            \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-            \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
-            \ },
-            \ 'component_visible_condition': {
-            \   'readonly': '(&filetype!="help"&& &readonly)',
-            \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
-            \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+            \ 'component_function': {
+            \   'fugitive': 'LightlineFugitive',
+            \   'readonly': 'LightlineReadonly',
+            \   'modified': 'LightlineModified',
+            \   'filename': 'LightlineFilename'
             \ },
             \ 'separator': { 'left': '', 'right': '' },
             \ 'subseparator': { 'left': '', 'right': '' }
           \ }
+        function! LightlineModified()
+          if &filetype == "help"
+            return ""
+          elseif &modified
+            return "+"
+          elseif &modifiable
+            return ""
+          else
+            return ""
+          endif
+        endfunction
+
+        function! LightlineReadonly()
+          if &filetype == "help"
+            return ""
+          elseif &readonly
+            return ""
+          else
+            return ""
+          endif
+        endfunction
+
+        function! LightlineFilename()
+          return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+                \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
+                \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+        endfunction
+
+        function! LightlineFugitive()
+          if exists("*fugitive#head")
+            let branch = fugitive#head()
+            return branch !=# '' ? ' '.branch : ''
+          endif
+          return ''
+        endfunction
       "}}}
 
       call dein#add('edkolev/tmuxline.vim')
