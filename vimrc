@@ -171,7 +171,7 @@
 
       call dein#add('itchyny/lightline.vim') "{{{
         let g:lightline = {
-            \ 'colorscheme': 'wombat',
+            \ 'colorscheme': 'PaperColor',
             \ 'active': {
             \   'left': [ [ 'mode', 'paste' ],
             \             [ 'fugitive', 'filename' ] ]
