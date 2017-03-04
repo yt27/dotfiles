@@ -126,7 +126,9 @@
     set runtimepath+=/home/yusuke/.vim/dein/repos/github.com/Shougo/dein.vim
 
     " Required:
-    if dein#load_state('/home/yusuke/.vim/dein')
+    " But commenting out load_state/save_state as it seems to be causing
+    " problems with lightline...
+    "if dein#load_state('/home/yusuke/.vim/dein')
       call dein#begin('/home/yusuke/.vim/dein')
 
       " Let dein manage dein
@@ -391,8 +393,8 @@
 
       " Required:
       call dein#end()
-      call dein#save_state()
-    endif
+      "call dein#save_state()
+    "endif
 
     " If you want to install not installed plugins on startup.
     if dein#check_install()
