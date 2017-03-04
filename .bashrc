@@ -22,13 +22,12 @@ alias cp='cp -ir'
 alias mv='mv -i'
 alias scp='scp -r'
 
+alias tmux='tmux -2' # for better colors
 alias config='/usr/bin/git --git-dir=$HOME/git/dotfiles.git --work-tree=$HOME'
 
 PATH=$HOME/local/tmux/bin:$PATH
 PATH=$HOME/local/rtags/bin:$PATH
 PATH=$HOME/Development/git/git/contrib/workdir:$PATH
 export PATH
-
-unset TMUX
 
 export EDITOR=vim
