@@ -122,9 +122,16 @@
 
 " setup dein / neobundle {{{
   if has('nvim')
-    set rtp+=~/.vim/dein-plugins/repos/github.com/Shougo/dein.vim
-    call dein#begin(expand('~/.vim/dein-plugins'))
-    call dein#add('~/.vim/dein-plugins/repos/github.com/Shougo/dein.vim')
+    " Required:
+    set runtimepath+=/home/yusuke/.vim/dein/repos/github.com/Shougo/dein.vim
+
+    " Required:
+    if dein#load_state('/home/yusuke/.vim/dein')
+      call dein#begin('/home/yusuke/.vim/dein')
+
+      " Let dein manage dein
+      " Required:
+      call dein#add('/home/yusuke/.vim/dein/repos/github.com/Shougo/dein.vim')
 
     " plugin/mapping configuration {{{
       call dein#add('Shougo/denite.nvim') "{{{
@@ -382,7 +389,15 @@
       "}}}
     "}}}
 
-    call dein#end()
+      " Required:
+      call dein#end()
+      call dein#save_state()
+    endif
+
+    " If you want to install not installed plugins on startup.
+    if dein#check_install()
+      call dein#install()
+    endif
   else
     set rtp+=~/.vim/bundle/neobundle.vim
     call neobundle#begin(expand('~/.vim/bundle/'))
