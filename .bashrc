@@ -23,11 +23,32 @@ alias mv='mv -i'
 alias scp='scp -r'
 
 alias tmux='tmux -2' # for better colors
+
 alias config='/usr/bin/git --git-dir=$HOME/git/dotfiles.git --work-tree=$HOME'
 
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+PATH=$HOME/local/bin:$PATH
 PATH=$HOME/local/tmux/bin:$PATH
 PATH=$HOME/local/rtags/bin:$PATH
-PATH=$HOME/Development/git/git/contrib/workdir:$PATH
+PATH=$HOME/local/android-sdk-linux/tools:$PATH
+PATH=$HOME/local/android-sdk-linux/platform-tools:$PATH
+PATH=$HOME/git/git/contrib/workdir:$PATH
 export PATH
 
 export EDITOR=vim
+
+export ANDROID_HOME=$HOME/local/android-sdk-linux
+
+export ICECC_DISABLED=1
+
+eval "$(thefuck --alias)"
