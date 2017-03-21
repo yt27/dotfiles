@@ -123,17 +123,17 @@
 " setup dein / neobundle {{{
   if has('nvim')
     " Required:
-    set runtimepath+=/home/yusuke/.vim/dein/repos/github.com/Shougo/dein.vim
+    set runtimepath+=$HOME/.vim/dein/repos/github.com/Shougo/dein.vim
 
     " Required:
     " But commenting out load_state/save_state as it seems to be causing
     " problems with lightline...
-    "if dein#load_state('/home/yusuke/.vim/dein')
-      call dein#begin('/home/yusuke/.vim/dein')
+    "if dein#load_state('$HOME/.vim/dein')
+      call dein#begin('$HOME/.vim/dein')
 
       " Let dein manage dein
       " Required:
-      call dein#add('/home/yusuke/.vim/dein/repos/github.com/Shougo/dein.vim')
+      call dein#add('$HOME/.vim/dein/repos/github.com/Shougo/dein.vim')
 
     " plugin/mapping configuration {{{
       call dein#add('Shougo/denite.nvim') "{{{
