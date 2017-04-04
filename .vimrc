@@ -163,7 +163,9 @@
 
       call dein#add('zchee/deoplete-jedi')
 
-      "call dein#add('LuXuryPro/deoplete-rtags')
+      call dein#add('LuXuryPro/deoplete-rtags') "{{{
+        "let g:deoplete#sources.cpp = ['buffer', 'rtags']
+      "}}}
 
       call dein#add('Rip-Rip/clang_complete') "{{{
         let g:clang_library_path='/usr/lib/llvm-3.8/lib'
