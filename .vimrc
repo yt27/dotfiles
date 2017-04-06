@@ -163,7 +163,7 @@
 
       call dein#add('zchee/deoplete-jedi')
 
-      call dein#add('LuXuryPro/deoplete-rtags') "{{{
+      "call dein#add('LuXuryPro/deoplete-rtags') "{{{
         "let g:deoplete#sources.cpp = ['buffer', 'rtags']
       "}}}
 

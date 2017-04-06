@@ -38,11 +38,11 @@ if ! shopt -oq posix; then
 fi
 
 PATH=$HOME/local/bin:$PATH
+PATH=$HOME/local/git/bin:$PATH
 PATH=$HOME/local/tmux/bin:$PATH
 PATH=$HOME/local/rtags/bin:$PATH
 PATH=$HOME/local/android-sdk-linux/tools:$PATH
 PATH=$HOME/local/android-sdk-linux/platform-tools:$PATH
-PATH=$HOME/git/git/contrib/workdir:$PATH
 export PATH
 
 export EDITOR=vim
@@ -50,8 +50,6 @@ export EDITOR=vim
 export ANDROID_HOME=$HOME/local/android-sdk-linux
 
 export ICECC_DISABLED=1
-
-eval "$(thefuck --alias)"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
