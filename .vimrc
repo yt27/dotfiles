@@ -391,6 +391,12 @@
         nmap <silent> <C-N>  <Plug>GoldenViewNext
         nmap <silent> <C-P>  <Plug>GoldenViewPrevious
       "}}}
+
+      call dein#add('google/vim-searchindex') "{{{
+      "}}}
+
+      call dein#add('google/vim-colorscheme-primary') "{{{
+      "}}}
     "}}}
 
       " Required:
@@ -819,7 +825,7 @@
   set background=dark
 
   " Set colorscheme
-  colorscheme desert
+  colorscheme primary
 
   " Splitting a window will put the new window right of the current one.
   set splitright
