@@ -1,0 +1,298 @@
+# http://qiita.com/delphinus/items/00ff2c0ba972c6e41542
+# http://qiita.com/kawaz/items/ee725f6214f91337b42b
+# http://qiita.com/delphinus/items/cd221a450fd23506e81a
+
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'Shougo/denite.vim'
+hook_add = '''
+  nmap <space> [denite]
+  nnoremap [denite] <nop>
+
+  nnoremap <silent> [denite]<space> :<C-u>Denite file_mru<cr><c-u>
+  nnoremap <silent> [denite]f :<C-u>Denite file_rec<cr><c-u>
+  nnoremap <silent> [denite]y :<C-u>Denite neo_yank<cr>
+  nnoremap <silent> [denite]l :<C-u>Denite line<cr>
+  nnoremap <silent> [denite]b :<C-u>Denite buffer<cr>
+  nnoremap <silent> [denite]/ :<C-u>Denite grep<cr>
+'''
+
+[[plugins]]
+repo = 'Shougo/neomru.vim'
+
+[[plugins]]
+repo = 'Shougo/neoyank.vim'
+
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+hook_post_update = '''
+  if dein#util#_is_windows()
+    let cmd = 'tools\\update-dll-mingw'
+  elseif dein#util#_is_cygwin()
+    let cmd = 'make -f make_cygwin.mak'
+  elseif executable('gmake')
+    let cmd = 'gmake'
+  else
+    let cmd = 'make'
+  endif
+  let g:dein#plugin.build = cmd
+'''
+
+[[plugins]]
+repo = 'Shougo/deoplete.vim'
+hook_add = '''
+  let g:deoplete#enable_at_startup = 1
+  " Tab to cycle thru matches
+  inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+  inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+  if !exists('g:deoplete#omni#input_patterns')
+    let g:deoplete#omni#input_patterns = {}
+  endif
+'''
+
+[[plugins]]
+repo = 'zchee/deoplete-jedi'
+
+[[plugins]]
+repo = 'Rip-Rip/clang_complete'
+hook_add = '''
+  let g:clang_library_path='/usr/lib/llvm-3.8/lib'
+  let g:clang_complete_auto = 0
+  let g:clang_auto_select = 0
+  let g:clang_omnicppcomplete_compliance = 0
+  let g:clang_make_default_keymappings = 0
+  "let g:clang_use_library = 1
+'''
+
+[[plugins]]
+repo = 'lyuts/vim-rtags'
+hook_add = '''
+  let g:rtagsUserLocationList = 0
+'''
+
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+  let g:lightline = {
+      \ 'colorscheme': 'PaperColor',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'fugitive', 'filename' ] ]
+      \ },
+      \ 'component_function': {
+      \   'fugitive': 'LightlineFugitive',
+      \   'readonly': 'LightlineReadonly',
+      \   'modified': 'LightlineModified',
+      \   'filename': 'LightlineFilename'
+      \ },
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '', 'right': '' }
+    \ }
+  function! LightlineModified()
+    if &filetype == "help"
+      return ""
+    elseif &modified
+      return "+"
+    elseif &modifiable
+      return ""
+    else
+      return ""
+    endif
+  endfunction
+
+  function! LightlineReadonly()
+    if &filetype == "help"
+      return ""
+    elseif &readonly
+      return ""
+    else
+      return ""
+    endif
+  endfunction
+
+  function! LightlineFilename()
+    return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+          \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
+          \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+  endfunction
+
+  function! LightlineFugitive()
+    if exists("*fugitive#head")
+      let branch = fugitive#head()
+      return branch !=# '' ? ' '.branch : ''
+    endif
+    return ''
+  endfunction
+'''
+
+[[plugins]]
+repo = 'edkolev/tmuxline.vim'
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+[[plugins]]
+repo = 'vim-scripts/a.vim')
+hook_add = '''
+  let g:alternateSearchPath = 'reg:/include/src/g/,reg:/src/include/g/'
+  let g:alternateNoDefaultAlternate = 1
+'''
+
+[[plugins]]
+repo = 'tpope/vim-repeat'
+
+[[plugins]]
+repo = 'tpope/vim-obsession'
+
+[[plugins]]
+repo = 'chazy/cscope_maps'
+
+[[plugins]]
+repo = 'taglist.vim'
+hook_add = '''
+  " Toggle Tag list plugin
+  map <leader>tl :TlistToggle<cr>
+
+  let Tlist_Auto_Open = 0
+  let Tlist_Exit_OnlyWindow = 1
+  "let Tlist_Show_One_File = 1
+  "let Tlist_Display_Prototype = 1
+  let Tlist_File_Fold_Auto_Close = 1
+  let Tlist_WinWidth = 40
+'''
+
+[[plugins]]
+repo = 'vim-scripts/vcscommand.vim'
+
+[[plugins]]
+repo = 'honza/vim-snippets'
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+hook_add = '''
+  " Trigger configuration. Do not use <tab> if you use
+  " https://github.com/Valloric/YouCompleteMe.
+  let g:UltiSnipsExpandTrigger = "<leader><tab>"
+  let g:UltiSnipsJumpForwardTrigger = "<leader><tab>"
+  let g:UltiSnipsJumpBackwardTrigger = "<leader><s-tab>"
+  let g:UltiSnipsListSnippets = "<leader>sn"
+  let g:UltiSnipsSnippetDirectories = ["snips-private", "UltiSnips"]
+
+  " " If you want :UltiSnipsEdit to split your window.
+  let g:UltiSnipsEditSplit = "vertical"
+'''
+
+[[plugins]]
+repo = 'tranngocthachs/gtags-cscope-vim-plugin'
+
+[[plugins]]
+repo = 'vim-scripts/gtags.vim'
+hook_add = '''
+  let GtagsCscope_Auto_Load = 1
+
+  " let GtagsCscope_Auto_Map = 1
+
+  let GtagsCscope_Quiet = 1
+
+  let GtagsCscope_Absolute_Path = 1
+'''
+
+[[plugins]]
+repo = 'kmnk/vim-unite-svn'
+
+[[plugins]]
+repo = 'Shougo/vimshell.vim'
+
+
+[[plugins]]
+repo = 'mbbill/undotree'
+hook_add = '''
+  nmap <leader>ut :UndotreeToggle<cr>
+'''
+
+[[plugins]]
+repo = 'tomtom/tcomment_vim'
+
+[[plugins]]
+repo = 'terryma/vim-multiple-cursors'
+
+[[plugins]]
+repo = 'tmhedberg/matchit'
+
+[[plugins]]
+repo = 'tpope/vim-surround'
+
+[[plugins]]
+repo = 'tpope/vim-dispatch'
+
+[[plugins]]
+repo = 'terryma/vim-expand-region'
+
+[[plugins]]
+repo = 'justinmk/vim-sneak'
+hook_add = '''
+  let g:sneak#streak = 0
+'''
+
+[[plugins]]
+repo = 'Yggdroot/indentLine'
+
+[[plugins]]
+repo = 'vim-scripts/multisearch.vim'
+hook_add = '''
+  function! s:initMsearch()
+    " Add your Msearch initialization commands here ...
+    Msearch highlight add ctermbg=blue
+    Msearch highlight add ctermbg=yellow
+    Msearch highlight add ctermbg=green
+    Msearch highlight add ctermbg=cyan
+    Msearch highlight add ctermbg=magenta
+    Msearch highlight add ctermbg=lightyellow
+    Msearch highlight add ctermbg=lightred
+    Msearch highlight add ctermbg=lightgreen
+    Msearch highlight add ctermbg=lightcyan
+    Msearch highlight add ctermbg=lightmagenta
+    Msearch highlight add ctermbg=lightgray
+    Msearch highlight add ctermbg=brown
+    Msearch highlight add ctermbg=darkgreen
+    Msearch highlight add ctermbg=darkmagenta
+    Msearch highlight add ctermbg=darkred
+
+    map <leader>m/ :Msearch add 
+    map <leader>mn :Msearch next<cr>
+    map <leader>mN :Msearch previous<cr>
+  endfunction
+  autocmd VimEnter * call s:initMsearch()
+'''
+
+[[plugins]]
+repo = 'jrosiek/vim-mark'
+hook_add = '''
+  let g:mwDefaultHighlightingPalette = 'maximum'
+'''
+
+[[plugins]]
+repo = 'zhaocai/GoldenView.Vim'
+hook_add = '''
+  let g:goldenview__enable_at_startup = 0
+
+  " 1. split to tiled windows
+  nmap <silent> <C-L>  <Plug>GoldenViewSplit
+
+  " 2. quickly switch current window with the main pane
+  " and toggle back
+  nmap <silent> <F8>   <Plug>GoldenViewSwitchMain
+  nmap <silent> <S-F8> <Plug>GoldenViewSwitchToggle
+
+  " 3. jump to next and previous window
+  nmap <silent> <C-N>  <Plug>GoldenViewNext
+  nmap <silent> <C-P>  <Plug>GoldenViewPrevious
+'''
+
+[[plugins]]
+repo = 'google/vim-searchindex'
+
+[[plugins]]
+repo = 'google/vim-colorscheme-primary'

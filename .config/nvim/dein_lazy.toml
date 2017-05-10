@@ -1,0 +1,11 @@
+[[plugins]]
+repo = 'guns/xterm-color-table.vim'
+on_cmd = ['XtermColorTable']
+
+[[plugins]]
+repo = 'pangloss/vim-javascript'
+on_ft = ['javascript']
+
+[[plugins]]
+repo = 'leshill/vim-json'
+on_ft = ['javascript', 'json']

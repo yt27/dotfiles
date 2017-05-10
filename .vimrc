@@ -122,289 +122,30 @@
 
 " setup dein / neobundle {{{
   if has('nvim')
-    " Required:
-    set runtimepath+=$HOME/.vim/dein/repos/github.com/Shougo/dein.vim
+    let s:dein_dir = expand('~/.vim/dein')
+    let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
 
-    " Required:
-    " But commenting out load_state/save_state as it seems to be causing
-    " problems with lightline...
-    "if dein#load_state('$HOME/.vim/dein')
-      call dein#begin('$HOME/.vim/dein')
+    if &runtimepath !~# '/dein.vim'
+      if !isdirectory(s:dein_repo_dir)
+        execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+      endif
+      execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+    endif
 
-      " Let dein manage dein
-      " Required:
-      call dein#add('$HOME/.vim/dein/repos/github.com/Shougo/dein.vim')
+    if dein#load_state(s:dein_dir)
+      call dein#begin(s:dein_dir)
 
-    " plugin/mapping configuration {{{
-      call dein#add('Shougo/denite.nvim') "{{{
-        nmap <space> [denite]
-        nnoremap [denite] <nop>
+      let g:rc_dir    = expand('~/.config/nvim')
+      let s:toml      = g:rc_dir . '/dein.toml'
+      let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
 
-        nnoremap <silent> [denite]<space> :<C-u>Denite file_mru<cr><c-u>
-        nnoremap <silent> [denite]f :<C-u>Denite file_rec<cr><c-u>
-        nnoremap <silent> [denite]y :<C-u>Denite neo_yank<cr>
-        nnoremap <silent> [denite]l :<C-u>Denite line<cr>
-        nnoremap <silent> [denite]b :<C-u>Denite buffer<cr>
-        nnoremap <silent> [denite]/ :<C-u>Denite grep<cr>
-      "}}}
+      call dein#load_toml(s:toml,      {'lazy': 0})
+      call dein#load_toml(s:lazy_toml, {'lazy': 1})
 
-      call dein#add('Shougo/neomru.vim')
-      call dein#add('Shougo/neoyank.vim')
-
-      call dein#add('Shougo/deoplete.nvim') "{{{
-        let g:deoplete#enable_at_startup = 1
-        " Tab to cycle thru matches
-        inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-        inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-        if !exists('g:deoplete#omni#input_patterns')
-          let g:deoplete#omni#input_patterns = {}
-        endif
-      "}}}
-
-      call dein#add('zchee/deoplete-jedi')
-
-      "call dein#add('LuXuryPro/deoplete-rtags') "{{{
-        "let g:deoplete#sources.cpp = ['buffer', 'rtags']
-      "}}}
-
-      call dein#add('Rip-Rip/clang_complete') "{{{
-        let g:clang_library_path='/usr/lib/llvm-3.8/lib'
-        let g:clang_complete_auto = 0
-        let g:clang_auto_select = 0
-        let g:clang_omnicppcomplete_compliance = 0
-        let g:clang_make_default_keymappings = 0
-        "let g:clang_use_library = 1
-      "}}}
-
-      call dein#add('lyuts/vim-rtags') "{{{
-        let g:rtagsUserLocationList = 0
-      "}}}
-
-      call dein#add('itchyny/lightline.vim') "{{{
-        let g:lightline = {
-            \ 'colorscheme': 'PaperColor',
-            \ 'active': {
-            \   'left': [ [ 'mode', 'paste' ],
-            \             [ 'fugitive', 'filename' ] ]
-            \ },
-            \ 'component_function': {
-            \   'fugitive': 'LightlineFugitive',
-            \   'readonly': 'LightlineReadonly',
-            \   'modified': 'LightlineModified',
-            \   'filename': 'LightlineFilename'
-            \ },
-            \ 'separator': { 'left': '', 'right': '' },
-            \ 'subseparator': { 'left': '', 'right': '' }
-          \ }
-        function! LightlineModified()
-          if &filetype == "help"
-            return ""
-          elseif &modified
-            return "+"
-          elseif &modifiable
-            return ""
-          else
-            return ""
-          endif
-        endfunction
-
-        function! LightlineReadonly()
-          if &filetype == "help"
-            return ""
-          elseif &readonly
-            return ""
-          else
-            return ""
-          endif
-        endfunction
-
-        function! LightlineFilename()
-          return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-                \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
-                \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
-        endfunction
-
-        function! LightlineFugitive()
-          if exists("*fugitive#head")
-            let branch = fugitive#head()
-            return branch !=# '' ? ' '.branch : ''
-          endif
-          return ''
-        endfunction
-      "}}}
-
-      call dein#add('edkolev/tmuxline.vim')
-
-      call dein#add('tpope/vim-fugitive')
-
-      call dein#add('vim-scripts/a.vim') "{{{
-        let g:alternateSearchPath = 'reg:/include/src/g/,reg:/src/include/g/'
-        let g:alternateNoDefaultAlternate = 1
-      "}}}
-
-      call dein#add('tpope/vim-repeat')
-
-      call dein#add('tpope/vim-obsession')
-
-      call dein#add('chazy/cscope_maps')
-
-      call dein#add('taglist.vim') "{{{
-        " Toggle Tag list plugin
-        map <leader>tl :TlistToggle<cr>
-
-        let Tlist_Auto_Open = 0
-        let Tlist_Exit_OnlyWindow = 1
-        "let Tlist_Show_One_File = 1
-        "let Tlist_Display_Prototype = 1
-        let Tlist_File_Fold_Auto_Close = 1
-        let Tlist_WinWidth = 40
-      "}}}
-
-      call dein#add('vim-scripts/vcscommand.vim')
-
-      call dein#add('honza/vim-snippets')
-
-      call dein#add('SirVer/ultisnips') "{{{
-        " Trigger configuration. Do not use <tab> if you use
-        " https://github.com/Valloric/YouCompleteMe.
-        let g:UltiSnipsExpandTrigger = "<leader><tab>"
-        let g:UltiSnipsJumpForwardTrigger = "<leader><tab>"
-        let g:UltiSnipsJumpBackwardTrigger = "<leader><s-tab>"
-        let g:UltiSnipsListSnippets = "<leader>sn"
-        let g:UltiSnipsSnippetDirectories = ["snips-private", "UltiSnips"]
-
-        " " If you want :UltiSnipsEdit to split your window.
-        let g:UltiSnipsEditSplit = "vertical"
-      "}}}
-
-      call dein#add('tranngocthachs/gtags-cscope-vim-plugin')
-
-      call dein#add('vim-scripts/gtags.vim') "{{{
-        let GtagsCscope_Auto_Load = 1
-
-        " let GtagsCscope_Auto_Map = 1
-
-        let GtagsCscope_Quiet = 1
-
-        let GtagsCscope_Absolute_Path = 1
-      "}}}
-
-      call dein#add('kmnk/vim-unite-svn')
-
-      call dein#add('Shougo/vimproc.vim', {
-        \ 'build': {
-          \ 'mac': 'make -f make_mac.mak',
-          \ 'unix': 'make -f make_unix.mak',
-          \ 'cygwin': 'make -f make_cygwin.mak',
-          \ 'windows': '"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\nmake.exe" make_msvc32.mak',
-        \ },
-      \ })
-
-      call dein#add('Shougo/vimshell.vim')
-
-      call dein#add('mbbill/undotree') "{{{{
-        nmap <leader>ut :UndotreeToggle<cr>
-      "}}}}
-
-      call dein#add('tomtom/tcomment_vim')
-
-      call dein#add('terryma/vim-multiple-cursors')
-
-      "call dein#add('jiangmiao/auto-pairs')
-
-      call dein#add('tmhedberg/matchit')
-
-      call dein#add('tpope/vim-surround')
-      call dein#add('tpope/vim-dispatch')
-
-      call dein#add('pangloss/vim-javascript', {'on_ft': ['javascript']})
-      call dein#add('leshill/vim-json', {'on_ft': ['javascript', 'json']})
-
-      call dein#add('terryma/vim-expand-region')
-
-      call dein#add('justinmk/vim-sneak') "{{{
-        let g:sneak#streak = 0
-      "}}}
-
-      " call dein#add('nathanaelkane/vim-indent-guides') "{{{
-      "   let g:indent_guides_start_level=1
-      "   let g:indent_guides_guide_size=1
-      "   let g:indent_guides_enable_on_vim_startup=1
-      "   let g:indent_guides_color_change_percent=3
-      "   if !has('gui_running')
-      "     let g:indent_guides_auto_colors=0
-      "     function! s:indent_set_console_colors()
-      "       hi IndentGuidesOdd ctermbg=235
-      "       hi IndentGuidesEven ctermbg=236
-      "     endfunction
-      "     autocmd VimEnter,Colorscheme * call s:indent_set_console_colors()
-      "   endif
-      "}}}
-
-      call dein#add('Yggdroot/indentLine') "{{{
-      "}}}
-
-      call dein#add('guns/xterm-color-table.vim', {'on_cmd': 'XtermColorTable'})
-
-      call dein#add('vim-scripts/multisearch.vim') "{{{
-        function! s:initMsearch()
-          " Add your Msearch initialization commands here ...
-          Msearch highlight add ctermbg=blue
-          Msearch highlight add ctermbg=yellow
-          Msearch highlight add ctermbg=green
-          Msearch highlight add ctermbg=cyan
-          Msearch highlight add ctermbg=magenta
-          Msearch highlight add ctermbg=lightyellow
-          Msearch highlight add ctermbg=lightred
-          Msearch highlight add ctermbg=lightgreen
-          Msearch highlight add ctermbg=lightcyan
-          Msearch highlight add ctermbg=lightmagenta
-          Msearch highlight add ctermbg=lightgray
-          Msearch highlight add ctermbg=brown
-          Msearch highlight add ctermbg=darkgreen
-          Msearch highlight add ctermbg=darkmagenta
-          Msearch highlight add ctermbg=darkred
-
-          map <leader>m/ :Msearch add 
-          map <leader>mn :Msearch next<cr>
-          map <leader>mN :Msearch previous<cr>
-        endfunction
-        autocmd VimEnter * call s:initMsearch()
-      "}}}
-
-      call dein#add('jrosiek/vim-mark') "{{{
-        let g:mwDefaultHighlightingPalette = 'maximum'
-      "}}}
-
-      call dein#add('zhaocai/GoldenView.Vim') "{{{
-        let g:goldenview__enable_at_startup = 0
-
-        " 1. split to tiled windows
-        nmap <silent> <C-L>  <Plug>GoldenViewSplit
-
-        " 2. quickly switch current window with the main pane
-        " and toggle back
-        nmap <silent> <F8>   <Plug>GoldenViewSwitchMain
-        nmap <silent> <S-F8> <Plug>GoldenViewSwitchToggle
-
-        " 3. jump to next and previous window
-        nmap <silent> <C-N>  <Plug>GoldenViewNext
-        nmap <silent> <C-P>  <Plug>GoldenViewPrevious
-      "}}}
-
-      call dein#add('google/vim-searchindex') "{{{
-      "}}}
-
-      call dein#add('google/vim-colorscheme-primary') "{{{
-      "}}}
-    "}}}
-
-      " Required:
       call dein#end()
-      "call dein#save_state()
-    "endif
+      call dein#save_state()
+    endif
 
-    " If you want to install not installed plugins on startup.
     if dein#check_install()
       call dein#install()
     endif
