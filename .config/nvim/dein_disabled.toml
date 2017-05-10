@@ -23,3 +23,11 @@ hook_add = '''
     autocmd VimEnter,Colorscheme * call s:indent_set_console_colors()
   endif
 '''
+
+[[plugins]]
+repo = 'google/vim-colorscheme-primary'
+hook_add = '''
+  set background=dark
+  au MyAutoCmd VimEnter * nested colorscheme primary
+'''
+

@@ -120,6 +120,11 @@
   endif
 "}}}
 
+" reset augroup
+augroup MyAutoCmd
+  autocmd!
+augroup END
+
 " setup dein / neobundle {{{
   if has('nvim')
     let s:dein_dir = expand('~/.vim/dein')
@@ -561,12 +566,6 @@
   " Show invisible chars
   set list
   set listchars=tab:>~,trail:~,extends:>,precedes:<
-
-  " Try to use colors that look good on a dark background
-  set background=dark
-
-  " Set colorscheme
-  colorscheme primary
 
   " Splitting a window will put the new window right of the current one.
   set splitright
