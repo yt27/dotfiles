@@ -11,6 +11,22 @@ hook_add = '''
   nmap <space> [denite]
   nnoremap [denite] <nop>
 
+  " Use ag for file_rec
+	call denite#custom#var('file_rec', 'command',
+	                     \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
+
+  " Restrict to current project for file_mru
+  call denite#custom#source('file_mru', 'matchers',
+                          \ ['matcher_project_files', 'matcher_fuzzy'])
+
+	" Ag command on grep source
+	call denite#custom#var('grep', 'command', ['ag'])
+	call denite#custom#var('grep', 'default_opts', ['-i'])
+	call denite#custom#var('grep', 'recursive_opts', [])
+	call denite#custom#var('grep', 'pattern_opt', [])
+	call denite#custom#var('grep', 'separator', ['--'])
+	call denite#custom#var('grep', 'final_opts', [])
+
   nnoremap <silent> [denite]<space> :<C-u>Denite file_mru<cr><c-u>
   nnoremap <silent> [denite]f :<C-u>Denite file_rec<cr><c-u>
   nnoremap <silent> [denite]y :<C-u>Denite neo_yank<cr>
@@ -40,16 +56,8 @@ hook_post_update = '''
   let g:dein#plugin.build = cmd
 '''
 
-[[plugins]] # カーソル位置のコンテキストに合わせてftを切り替える
-repo = 'osyo-manga/vim-precious'
-depends = ['context_filetype.vim']
-
-[[plugins]] # カーソル位置のコンテキストのftを判定するライブラリ
-repo = 'Shougo/context_filetype.vim'
-
-[[plugins]] # toml syntax
-repo = 'cespare/vim-toml'
-on_ft = 'toml'
+[[plugins]]
+repo = 'airblade/vim-rooter'
 
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
@@ -197,9 +205,6 @@ hook_add = '''
 
 [[plugins]]
 repo = 'tranngocthachs/gtags-cscope-vim-plugin'
-
-[[plugins]]
-repo = 'vim-scripts/gtags.vim'
 hook_add = '''
   let GtagsCscope_Auto_Load = 1
 
@@ -312,4 +317,13 @@ hook_add = '''
   " colorscheme 設定は source 後に行う必要があるので VimEnter で行う。
   " 但し Colorscheme イベントの発生が抑制されないよう nented を付ける。
   au MyAutoCmd VimEnter * nested colorscheme hybrid
+'''
+
+[[plugins]]
+repo = 'majutsushi/tagbar'
+hook_add = '''
+  let g:tagbar_left = 1
+
+  " Toggle Tag list plugin
+  map <leader>tb :TagbarToggle<cr>
 '''

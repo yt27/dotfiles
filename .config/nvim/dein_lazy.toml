@@ -9,3 +9,7 @@ on_ft = ['javascript']
 [[plugins]]
 repo = 'leshill/vim-json'
 on_ft = ['javascript', 'json']
+
+[[plugins]] # toml syntax
+repo = 'cespare/vim-toml'
+on_ft = 'toml'
