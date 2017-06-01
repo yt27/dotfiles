@@ -39,4 +39,31 @@ depends = ['context_filetype.vim']
 repo = 'Shougo/context_filetype.vim'
 
 [[plugins]]
-repo = 'vim-scripts/gtags.vim'
+repo = 'kmnk/vim-unite-svn'
+
+[[plugins]]
+repo = 'Shougo/vimshell.vim'
+
+[[plugins]]
+repo = 'jrosiek/vim-mark'
+hook_add = '''
+  let g:mwDefaultHighlightingPalette = 'maximum'
+'''
+
+[[plugins]]
+repo = 'zhaocai/GoldenView.Vim'
+hook_add = '''
+  let g:goldenview__enable_at_startup = 0
+
+  " 1. split to tiled windows
+  nmap <silent> <C-L>  <Plug>GoldenViewSplit
+
+  " 2. quickly switch current window with the main pane
+  " and toggle back
+  nmap <silent> <F8>   <Plug>GoldenViewSwitchMain
+  nmap <silent> <S-F8> <Plug>GoldenViewSwitchToggle
+
+  " 3. jump to next and previous window
+  nmap <silent> <C-N>  <Plug>GoldenViewNext
+  nmap <silent> <C-P>  <Plug>GoldenViewPrevious
+'''
