@@ -29,7 +29,7 @@ hook_add = '''
 
   nnoremap <silent> [denite]<space> :<C-u>Denite file_mru<cr><c-u>
   nnoremap <silent> [denite]f :<C-u>Denite file_rec<cr><c-u>
-  nnoremap <silent> [denite]y :<C-u>Denite neo_yank<cr>
+  nnoremap <silent> [denite]y :<C-u>Denite neoyank -default-action=append<cr>
   nnoremap <silent> [denite]l :<C-u>Denite line<cr>
   nnoremap <silent> [denite]b :<C-u>Denite buffer<cr>
   nnoremap <silent> [denite]/ :<C-u>Denite grep<cr>
@@ -220,6 +220,9 @@ hook_add = '''
 
 [[plugins]]
 repo = 'vim-scripts/gtags.vim'
+
+[[plugins]]
+repo = 'tpope/vim-vinegar'
 
 [[plugins]]
 repo = 'mbbill/undotree'
