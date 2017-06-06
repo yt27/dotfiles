@@ -467,7 +467,7 @@ augroup END
   " set diffopt+=iwhite
 
   " Allow backgrounding buffers without writing them.
-  set hidden
+  " set hidden
 
   " Report every change
   set report=0
@@ -687,6 +687,9 @@ augroup END
 
   nnoremap <C-w>. :call MoveToNextTab()<CR>
   nnoremap <C-w>, :call MoveToPrevTab()<CR>
+
+  "This unsets the "last search pattern" register by hitting return
+  nnoremap <CR> :noh<CR><CR>
 "}}}
 
 " python {{{
