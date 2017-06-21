@@ -157,9 +157,6 @@ repo = 'tpope/vim-repeat'
 repo = 'tpope/vim-obsession'
 
 [[plugins]]
-repo = 'chazy/cscope_maps'
-
-[[plugins]]
 repo = 'taglist.vim'
 hook_add = '''
   " Toggle Tag list plugin
@@ -207,15 +204,15 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'tranngocthachs/gtags-cscope-vim-plugin'
+repo = 'joereynolds/gtags-scope'
 hook_add = '''
-  let GtagsCscope_Auto_Load = 1
+  let g:GtagsCscope_Auto_Load = 1
 
-  " let GtagsCscope_Auto_Map = 1
+  let g:GtagsCscope_Auto_Map = 1
 
-  let GtagsCscope_Quiet = 1
+  "let g:GtagsCscope_Quiet = 1
 
-  let GtagsCscope_Absolute_Path = 1
+  let g:GtagsCscope_Absolute_Path = 1
 '''
 
 [[plugins]]

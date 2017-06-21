@@ -479,6 +479,7 @@ augroup END
   set cursorline
 
   set cscopetag
+  set cscopeprg=gtags-cscope
 
   " vim file/folder management {{{
     " persistent undo
