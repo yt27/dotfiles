@@ -80,9 +80,10 @@ hook_add = '''
   " Tab to cycle thru matches
   inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
   inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-  if !exists('g:deoplete#omni#input_patterns')
-    let g:deoplete#omni#input_patterns = {}
-  endif
+
+  let g:EclimCompletionMethod = 'omnifunc'
+  let g:deoplete#omni#input_patterns = {}
+  let g:deoplete#omni#input_patterns.java = '[^. *\t]\.\w*'
 '''
 
 [[plugins]]
@@ -157,7 +158,7 @@ repo = 'tpope/vim-repeat'
 repo = 'tpope/vim-obsession'
 
 [[plugins]]
-repo = 'taglist.vim'
+repo = 'vim-scripts/taglist.vim'
 hook_add = '''
   " Toggle Tag list plugin
   map <leader>tl :TlistToggle<cr>
