@@ -37,6 +37,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
+export LC_ALL=UTF-8
+export LANG=UTF-8
+
 PATH=$HOME/local/bin:$PATH
 PATH=$HOME/local/git/bin:$PATH
 PATH=$HOME/local/tmux/bin:$PATH
