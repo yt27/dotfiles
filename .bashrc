@@ -37,8 +37,8 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export LC_ALL=UTF-8
-export LANG=UTF-8
+export LC_ALL=en_US.utf8
+export LANG=en_US.utf8
 
 PATH=$HOME/local/bin:$PATH
 PATH=$HOME/local/git/bin:$PATH
