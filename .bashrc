@@ -41,6 +41,7 @@ PATH=$HOME/local/bin:$PATH
 PATH=$HOME/local/git/bin:$PATH
 PATH=$HOME/local/tmux/bin:$PATH
 PATH=$HOME/local/rtags/bin:$PATH
+PATH=$HOME/local/global/bin:$PATH
 PATH=$HOME/local/android-sdk-linux/tools:$PATH
 PATH=$HOME/local/android-sdk-linux/platform-tools:$PATH
 export PATH
@@ -53,3 +54,7 @@ export ICECC_DISABLED=1
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/root/.sdkman"
+[[ -s "/root/.sdkman/bin/sdkman-init.sh" ]] && source "/root/.sdkman/bin/sdkman-init.sh"
