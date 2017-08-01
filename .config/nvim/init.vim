@@ -693,13 +693,6 @@ augroup END
   nnoremap <CR> :noh<CR><CR>
 "}}}
 
-" python {{{
-  if has('nvim')
-    let g:python_host_prog  = '/usr/bin/python'
-    let g:python3_host_prog = '/usr/bin/python3'
-  endif
-"}}}
-
 " autocommand {{{
   " Make sure autocommands are loaded only once
   if !exists("autocommands_loaded") && has("autocmd") "{{{
