@@ -1,5 +1,7 @@
+[init]
+  templatedir = ~/.config/yt/git/templates
+
 [user]
-  email = ytakebuchi@netflix.com
   name = Yusuke Takebuchi
 
 [alias]
