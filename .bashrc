@@ -24,7 +24,7 @@ alias scp='scp -r'
 
 alias tmux='tmux -2' # for better colors
 
-alias config='/usr/bin/git --git-dir=$HOME/git/dotfiles.git --work-tree=$HOME'
+alias config='git --git-dir=$HOME/git/dotfiles.git --work-tree=$HOME'
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -41,15 +41,32 @@ export LC_ALL=en_US.utf8
 export LANG=en_US.utf8
 
 PATH=$HOME/local/bin:$PATH
+PATH=$HOME/local/scripts:$PATH
+PATH=$HOME/local/neovim/bin:$PATH
 PATH=$HOME/local/git/bin:$PATH
 PATH=$HOME/local/tmux/bin:$PATH
 PATH=$HOME/local/rtags/bin:$PATH
 PATH=$HOME/local/global/bin:$PATH
+PATH=$HOME/local/python/bin:$PATH
+PATH=$HOME/local/ag/bin:$PATH
+PATH=$HOME/local/eclipse:$PATH
 PATH=$HOME/local/android-sdk-linux/tools:$PATH
 PATH=$HOME/local/android-sdk-linux/platform-tools:$PATH
 export PATH
 
-export EDITOR=vim
+export EDITOR=nvim
+
+MANPATH=$HOME/local/neovim/share/man:$MANPATH
+MANPATH=$HOME/local/tmux/share/man:$MANPATH
+MANPATH=$HOME/local/global/share/man:$MANPATH
+MANPATH=$HOME/local/ag/share/man:$MANPATH
+export MANPATH
+
+PKG_CONFIG_PATH=$HOME/local/libevent/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH
+
+LD_LIBRARY_PATH=$HOME/local/libevent/lib
+export LD_LIBRARY_PATH
 
 export ANDROID_HOME=$HOME/local/android-sdk-linux
 
@@ -61,3 +78,5 @@ export NVM_DIR="$HOME/.nvm"
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/root/.sdkman"
 [[ -s "/root/.sdkman/bin/sdkman-init.sh" ]] && source "/root/.sdkman/bin/sdkman-init.sh"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
