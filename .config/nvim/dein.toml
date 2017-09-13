@@ -11,8 +11,15 @@ hook_add = '''
   nmap <space> [denite]
   nnoremap [denite] <nop>
 
+  " Change default options
+  " call denite#custom#option('default', 'auto_preview', v:true)
+  call denite#custom#option('default', 'highlight_matched_char', 'Type')
+  call denite#custom#option('default', 'highlight_preview_line', 'Type')
+  call denite#custom#option('default', 'highlight_mode_insert', 'None')
+
   " Use the sublime sorter by default.
   call denite#custom#source('_', 'sorters', ['sorter_sublime'])
+  call denite#custom#source('_', 'converters', ['converter_relative_word'])
 
   " Use ag for file_rec
 	call denite#custom#var('file_rec', 'command',
@@ -31,13 +38,18 @@ hook_add = '''
 	call denite#custom#var('grep', 'final_opts', [])
 
   nnoremap <silent> [denite]<space> :<C-u>Denite file_mru<cr><c-u>
-  nnoremap <silent> [denite]f :<C-u>Denite file_rec<cr><c-u>
-  nnoremap <silent> [denite]y :<C-u>Denite neoyank -default-action=append<cr>
-  nnoremap <silent> [denite]l :<C-u>Denite line<cr>
-  nnoremap <silent> [denite]b :<C-u>Denite buffer<cr>
   nnoremap <silent> [denite]/ :<C-u>Denite grep<cr>
-
+  nnoremap <silent> [denite]b :<C-u>Denite buffer<cr>
+  nnoremap <silent> [denite]c :<C-u>Denite change<cr>
+  nnoremap <silent> [denite]C :<C-u>Denite command_history<cr>
+  nnoremap <silent> [denite]f :<C-u>Denite file_rec<cr><c-u>
+  nnoremap <silent> [denite]h :<C-u>Denite help<cr><c-u>
+  nnoremap <silent> [denite]j :<C-u>Denite jump<cr>
+  nnoremap <silent> [denite]l :<C-u>Denite line<cr>
+  nnoremap <silent> [denite]o :<C-u>Denite outline<cr>
+  nnoremap <silent> [denite]r :<C-u>Denite register<cr>
   nnoremap <silent> [denite]t :<C-u>Denite -buffer-name=gtags_completion gtags_completion<cr>
+  nnoremap <silent> [denite]y :<C-u>Denite neoyank -default-action=append<cr>
 '''
 
 [[plugins]]
@@ -319,3 +331,25 @@ hook_add = '''
 
 [[plugins]]
 repo = 'christoomey/vim-tmux-navigator'
+
+[[plugins]]
+repo = 'benmills/vimux'
+hook_add = '''
+  " Prompt for a command to run
+  map <Leader>vp :VimuxPromptCommand<CR>
+
+  " Run last command executed by VimuxRunCommand
+  map <Leader>vl :VimuxRunLastCommand<CR>
+
+  " Inspect runner pane
+  map <Leader>vi :VimuxInspectRunner<CR>
+
+  " Close vim tmux runner opened by VimuxRunCommand
+  map <Leader>vq :VimuxCloseRunner<CR>
+
+  " Interrupt any command running in the runner pane
+  map <Leader>vx :VimuxInterruptRunner<CR>
+
+  " Zoom the runner pane (use <bind-key> z to restore runner pane)
+  map <Leader>vz :call VimuxZoomRunner()<CR>
+'''
