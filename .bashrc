@@ -24,6 +24,8 @@ alias scp='scp -r'
 
 alias tmux='tmux -2' # for better colors
 
+alias xterm='xterm -fa "Ubuntu Mono derivative Powerline" -fs 11 +sb'
+
 alias config='git --git-dir=$HOME/git/dotfiles.git --work-tree=$HOME'
 
 # enable programmable completion features (you don't need to enable
@@ -40,6 +42,7 @@ fi
 export LC_ALL=en_US.utf8
 export LANG=en_US.utf8
 
+PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
 PATH=$HOME/local/bin:$PATH
 PATH=$HOME/local/scripts:$PATH
 PATH=$HOME/local/neovim/bin:$PATH
@@ -48,6 +51,7 @@ PATH=$HOME/local/tmux/bin:$PATH
 PATH=$HOME/local/rtags/bin:$PATH
 PATH=$HOME/local/global/bin:$PATH
 PATH=$HOME/local/python/bin:$PATH
+PATH=$HOME/local/python3/bin:$PATH
 PATH=$HOME/local/ag/bin:$PATH
 PATH=$HOME/local/eclipse:$PATH
 PATH=$HOME/local/android-sdk-linux/tools:$PATH
@@ -56,16 +60,20 @@ export PATH
 
 export EDITOR=nvim
 
+MANPATH=/home/linuxbrew/.linuxbrew/share/man:$MANPATH
 MANPATH=$HOME/local/neovim/share/man:$MANPATH
 MANPATH=$HOME/local/tmux/share/man:$MANPATH
 MANPATH=$HOME/local/global/share/man:$MANPATH
 MANPATH=$HOME/local/ag/share/man:$MANPATH
 export MANPATH
 
+INFOPATH=/home/linuxbrew/.linuxbrew/share/info:$INFOPATH
+export INFOPATH
+
 PKG_CONFIG_PATH=$HOME/local/libevent/lib/pkgconfig:$PKG_CONFIG_PATH
 export PKG_CONFIG_PATH
 
-LD_LIBRARY_PATH=$HOME/local/libevent/lib
+LD_LIBRARY_PATH=$HOME/local/libevent/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 
 export ANDROID_HOME=$HOME/local/android-sdk-linux
@@ -79,4 +87,48 @@ export NVM_DIR="$HOME/.nvm"
 export SDKMAN_DIR="/root/.sdkman"
 [[ -s "/root/.sdkman/bin/sdkman-init.sh" ]] && source "/root/.sdkman/bin/sdkman-init.sh"
 
+# Begin ssh agent init
+# https://confluence.atlassian.com/bitbucket/my-gitbash-ssh-environment-always-asks-for-my-passphrase-what-can-i-do-277252540.html
+SSH_ENV=$HOME/.ssh/environment
+
+# start the ssh-agent
+function start_agent {
+  echo "Initializing new SSH agent..."
+  # spawn ssh-agent
+  /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+  echo succeeded
+  chmod 600 "${SSH_ENV}"
+  . "${SSH_ENV}" > /dev/null
+  /usr/bin/ssh-add
+}
+
+if [ -f "${SSH_ENV}" ]; then
+  . "${SSH_ENV}" > /dev/null
+  ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+  start_agent;
+}
+else
+  start_agent;
+fi
+# End ssh agent init
+
+# Begin share history among sessions
+# https://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
+# Avoid duplicates
+export HISTCONTROL=ignoredups:erasedups  
+# When the shell exits, append to the history file instead of overwriting it
+shopt -s histappend
+
+# After each command, append to the history file and reread it
+#export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+# End share history among sessions
+
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+PATH="/home/ytakebuc/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/ytakebuc/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/ytakebuc/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/ytakebuc/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/ytakebuc/perl5"; export PERL_MM_OPT;
+
+eval $(thefuck --alias)

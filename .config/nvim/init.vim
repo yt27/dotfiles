@@ -697,9 +697,6 @@ augroup END
 " autocommand {{{
   " Make sure autocommands are loaded only once
   if !exists("autocommands_loaded") && has("autocmd") "{{{
-    " Set noexpandtab automatically when editing makefiles
-    autocmd FileType make setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
-
     " Reload vimrc after editing
     autocmd BufWritePost ~/.vimrc source ~/.vimrc
 
@@ -718,13 +715,17 @@ augroup END
     " Close preview window
     autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
+    " Set noexpandtab automatically when editing makefiles
+    autocmd FileType make setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
+
     autocmd FileType js,scss,css autocmd BufWritePre <buffer> call StripTrailingWhitespace()
     autocmd FileType css,scss setlocal foldmethod=marker foldmarker={,}
     autocmd FileType css,scss nnoremap <silent> <leader>S vi{:sort<CR>
     autocmd FileType python setlocal foldmethod=indent tabstop=2 softtabstop=2 shiftwidth=2 expandtab
     autocmd FileType markdown setlocal nolist
     autocmd FileType vim setlocal fdm=indent keywordprg=:help
-    autocmd FileType cpp set iskeyword-=:
+    autocmd FileType cpp setlocal iskeyword-=:
+    autocmd FileType java setlocal colorcolumn=120
 
     let autocommands_loaded = 1
   endif "}}}
