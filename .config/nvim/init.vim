@@ -725,7 +725,7 @@ augroup END
     autocmd FileType markdown setlocal nolist
     autocmd FileType vim setlocal fdm=indent keywordprg=:help
     autocmd FileType cpp setlocal iskeyword-=:
-    autocmd FileType java setlocal colorcolumn=120
+    autocmd FileType java,groovy,scala setlocal colorcolumn=120 textwidth=118
 
     let autocommands_loaded = 1
   endif "}}}

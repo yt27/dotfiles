@@ -26,8 +26,8 @@ hook_add = '''
 	                     \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
 
   " Restrict to current project for file_mru
-  call denite#custom#source('file_mru', 'matchers',
-                          \ ['matcher_project_files', 'matcher_fuzzy'])
+  ""call denite#custom#source('file_mru', 'matchers',
+                          ""\ ['matcher_project_files', 'matcher_fuzzy'])
   call denite#custom#source('line', 'matchers', ['matcher_fuzzy'])
 
 	" Ag command on grep source
@@ -38,7 +38,7 @@ hook_add = '''
 	call denite#custom#var('grep', 'separator', ['--'])
 	call denite#custom#var('grep', 'final_opts', [])
 
-  nnoremap <silent> [denite]<space> :<C-u>Denite file_mru<cr><c-u>
+  nnoremap <silent> [denite]<space> :<C-u>Denite -resume<cr><c-u>
   nnoremap <silent> [denite]/ :<C-u>Denite grep<cr>
   nnoremap <silent> [denite]b :<C-u>Denite buffer<cr>
   nnoremap <silent> [denite]c :<C-u>Denite change<cr>
@@ -47,10 +47,77 @@ hook_add = '''
   nnoremap <silent> [denite]h :<C-u>Denite help<cr><c-u>
   nnoremap <silent> [denite]j :<C-u>Denite jump<cr>
   nnoremap <silent> [denite]l :<C-u>Denite line<cr>
+  nnoremap <silent> [denite]m :<C-u>Denite file_mru<cr><c-u>
   nnoremap <silent> [denite]o :<C-u>Denite outline<cr>
   nnoremap <silent> [denite]r :<C-u>Denite register<cr>
   nnoremap <silent> [denite]t :<C-u>Denite -buffer-name=gtags_completion gtags_completion<cr>
   nnoremap <silent> [denite]y :<C-u>Denite neoyank -default-action=append<cr>
+'''
+
+[[plugins]]
+repo = '~/.linuxbrew/opt/fzf'
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+hook_add = '''
+  " Enable per-command history.
+  " CTRL-N and CTRL-P will be automatically bound to next-history and
+  " previous-history instead of down and up. If you don't like the change,
+  " explicitly bind the keys to down and up in your $FZF_DEFAULT_OPTS.
+  let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+  " Augmenting Ag command using fzf#vim#with_preview function
+  "   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
+  "     * For syntax-highlighting, Ruby and any of the following tools are required:
+  "       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
+  "       - CodeRay: http://coderay.rubychan.de/
+  "       - Rouge: https://github.com/jneen/rouge
+  "
+  "   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
+  "   :Ag! - Start fzf in fullscreen and display the preview window above
+  command! -bang -nargs=* Ag
+    \ call fzf#vim#ag(<q-args>,
+    \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+    \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \                 <bang>0)
+
+  " Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
+  command! -bang -nargs=* Ag
+  \ call fzf#vim#grep(
+  \   <q-args>,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+  " Likewise, Files command with preview window
+  command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>,
+    \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+    \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \                 <bang>0)
+
+  nmap <leader>f [fzf]
+  nnoremap [fzf] <nop>
+
+  nnoremap <silent> [fzf]f :<C-u>Files<cr><c-u>
+  nnoremap <silent> [fzf]gf :<C-u>GFiles<cr><c-u>
+  nnoremap <silent> [fzf]gs :<C-u>GFiles?<cr><c-u>
+  nnoremap <silent> [fzf]gc :<C-u>Commits<cr><c-u>
+  nnoremap <silent> [fzf]gbc :<C-u>BCommits<cr><c-u>
+  nnoremap <silent> [fzf]b :<C-u>Buffers<cr><c-u>
+  nnoremap <silent> [fzf]g :<C-u>Ag<cr><c-u>
+  nnoremap <silent> [fzf]l :<C-u>Lines<cr><c-u>
+  nnoremap <silent> [fzf]bl :<C-u>BLines<cr><c-u>
+  nnoremap <silent> [fzf]t :<C-u>Tags<cr><c-u>
+  nnoremap <silent> [fzf]bt :<C-u>BTags<cr><c-u>
+  nnoremap <silent> [fzf]m :<C-u>Marks<cr><c-u>
+  nnoremap <silent> [fzf]w :<C-u>Windows<cr><c-u>
+  nnoremap <silent> [fzf]h :<C-u>History<cr><c-u>
+  nnoremap <silent> [fzf]ch :<C-u>History:<cr><c-u>
+  nnoremap <silent> [fzf]sh :<C-u>History/<cr><c-u>
+  nnoremap <silent> [fzf]c :<C-u>Commands<cr><c-u>
+  nnoremap <silent> [fzf]m :<C-u>Maps<cr><c-u>
+  nnoremap <silent> [fzf]h :<C-u>Helptags<cr><c-u>
 '''
 
 [[plugins]]
@@ -354,3 +421,6 @@ hook_add = '''
   " Zoom the runner pane (use <bind-key> z to restore runner pane)
   map <Leader>vz :call VimuxZoomRunner()<CR>
 '''
+
+[[plugins]]
+repo = 'motus/pig.vim'
