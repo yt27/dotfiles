@@ -455,3 +455,6 @@ repo = 'thiagoalessio/rainbow_levels.vim'
 hook_add = '''
   map <leader>r :RainbowLevelsToggle<cr>
 '''
+
+[[plugins]]
+repo = 'tommcdo/vim-exchange'
