@@ -536,7 +536,7 @@ augroup END
   set ruler
 
   " Print the line number in front of each line.
-  set number
+  set number relativenumber
 
   " Always show the status line in the last window
   set laststatus=2
@@ -726,6 +726,18 @@ augroup END
     autocmd FileType vim setlocal fdm=indent keywordprg=:help
     autocmd FileType cpp setlocal iskeyword-=:
     autocmd FileType java,groovy,scala setlocal colorcolumn=120 textwidth=118
+
+    augroup numbertoggle
+      autocmd!
+      autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+      autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+    augroup END
+
+    " for .hql files
+    au BufNewFile,BufRead *.hql set filetype=hive expandtab
+
+    " for .q files
+    au BufNewFile,BufRead *.q set filetype=hive expandtab
 
     let autocommands_loaded = 1
   endif "}}}

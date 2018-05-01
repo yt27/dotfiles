@@ -6,56 +6,10 @@
 repo = 'Shougo/dein.vim'
 
 [[plugins]]
-repo = 'Shougo/denite.nvim'
-hook_add = '''
-  nmap <leader>d [denite]
-  nnoremap [denite] <nop>
-
-  " Change default options
-  " call denite#custom#option('default', 'auto_preview', v:true)
-  call denite#custom#option('default', 'highlight_matched_char', 'Type')
-  call denite#custom#option('default', 'highlight_preview_line', 'Type')
-  call denite#custom#option('default', 'highlight_mode_insert', 'None')
-
-  " Use the sublime sorter by default.
-  call denite#custom#source('_', 'sorters', ['sorter_sublime'])
-  call denite#custom#source('_', 'converters', ['converter_relative_word'])
-
-  " Use ag for file_rec
-	call denite#custom#var('file_rec', 'command',
-	                     \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
-
-  " Restrict to current project for file_mru
-  ""call denite#custom#source('file_mru', 'matchers',
-                          ""\ ['matcher_project_files', 'matcher_fuzzy'])
-  call denite#custom#source('line', 'matchers', ['matcher_fuzzy'])
-
-	" Ag command on grep source
-	call denite#custom#var('grep', 'command', ['ag'])
-	call denite#custom#var('grep', 'default_opts', ['-i', '-t']) " ignore case, all text files
-	call denite#custom#var('grep', 'recursive_opts', [])
-	call denite#custom#var('grep', 'pattern_opt', [])
-	call denite#custom#var('grep', 'separator', ['--'])
-	call denite#custom#var('grep', 'final_opts', [])
-
-  nnoremap <silent> [denite]<space> :<C-u>Denite -resume<cr><c-u>
-  nnoremap <silent> [denite]/ :<C-u>Denite grep<cr>
-  nnoremap <silent> [denite]b :<C-u>Denite buffer<cr>
-  nnoremap <silent> [denite]c :<C-u>Denite change<cr>
-  nnoremap <silent> [denite]C :<C-u>Denite command_history<cr>
-  nnoremap <silent> [denite]f :<C-u>Denite file_rec<cr><c-u>
-  nnoremap <silent> [denite]h :<C-u>Denite help<cr><c-u>
-  nnoremap <silent> [denite]j :<C-u>Denite jump<cr>
-  nnoremap <silent> [denite]l :<C-u>Denite line<cr>
-  nnoremap <silent> [denite]m :<C-u>Denite file_mru<cr><c-u>
-  nnoremap <silent> [denite]o :<C-u>Denite outline<cr>
-  nnoremap <silent> [denite]r :<C-u>Denite register<cr>
-  nnoremap <silent> [denite]t :<C-u>Denite -buffer-name=gtags_completion gtags_completion<cr>
-  nnoremap <silent> [denite]y :<C-u>Denite neoyank -default-action=append<cr>
-'''
-
-[[plugins]]
 repo = '~/.linuxbrew/opt/fzf'
+hook_add = '''
+  let $FZF_DEFAULT_OPTS .= ' --no-height'
+'''
 
 [[plugins]]
 repo = 'junegunn/fzf.vim'
@@ -395,6 +349,8 @@ hook_add = '''
   map <leader>ntt :NERDTreeToggle<cr>
   map <leader>ntf :NERDTreeFind<cr>
 
+  let NERDTreeHijackNetrw=1
+
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 '''
 
@@ -425,3 +381,77 @@ hook_add = '''
 
 [[plugins]]
 repo = 'motus/pig.vim'
+
+[[plugins]]
+repo = 't9md/vim-choosewin'
+hook_add = '''
+  nmap  <leader>cw <Plug>(choosewin)
+  let g:choosewin_overlay_enable = 1
+'''
+
+[[plugins]]
+repo = 'easymotion/vim-easymotion'
+
+hook_add = '''
+  let g:EasyMotion_use_upper = 1
+  let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;'
+
+  map <Leader>e <Plug>(easymotion-prefix)
+'''
+
+[[plugins]]
+repo = 'haya14busa/incsearch-easymotion.vim'
+
+[[plugins]]
+repo = 'haya14busa/incsearch.vim'
+
+hook_add = '''
+  " You can use other keymappings like <C-l> instead of <CR> if you want to
+  " use these mappings as default search and somtimes want to move cursor with
+  " EasyMotion.
+  function! s:incsearch_config(...) abort
+    return incsearch#util#deepextend(deepcopy({
+    \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+    \   'keymap': {
+    \     "\<c-e>": '<Over>(easymotion)'
+    \   },
+    \   'is_expr': 0
+    \ }), get(a:, 1, {}))
+  endfunction
+
+  noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
+  noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
+  noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+'''
+
+[[plugins]]
+repo = 'haya14busa/incsearch-fuzzy.vim'
+
+hook_add = '''
+  " You can use other keymappings like <C-l> instead of <CR> if you want to
+  " use these mappings as default search and somtimes want to move cursor with
+  " EasyMotion.
+  function! s:incsearch_fuzzy_config(...) abort
+    return incsearch#util#deepextend(deepcopy({
+    \   'converters': [incsearch#config#fuzzy#converter()],
+    \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+    \   'keymap': {
+    \     "\<c-e>": '<Over>(easymotion)'
+    \   },
+    \   'is_expr': 0
+    \ }), get(a:, 1, {}))
+  endfunction
+
+  noremap <silent><expr> f/  incsearch#go(<SID>incsearch_fuzzy_config())
+  noremap <silent><expr> f?  incsearch#go(<SID>incsearch_fuzzy_config({'command': '?'}))
+  noremap <silent><expr> fg/ incsearch#go(<SID>incsearch_fuzzy_config({'is_stay': 1}))
+'''
+
+[[plugins]]
+repo = 'autowitch/hive.vim'
+
+[[plugins]]
+repo = 'thiagoalessio/rainbow_levels.vim'
+hook_add = '''
+  map <leader>r :RainbowLevelsToggle<cr>
+'''
