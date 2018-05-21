@@ -681,6 +681,7 @@ augroup END
   map <leader>ww :write<cr>
   map <leader>ws :split<cr>
   map <leader>wv :vsplit<cr>
+  map <leader>wz :-tabnew %<cr>
 
   map <leader>s :set spell!<cr>
 
