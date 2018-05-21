@@ -3,14 +3,30 @@ if [ -f /etc/bashrc ]; then
 fi
 
 P_DEFAULT="\e[0m\]"
+
+P_BLACK="\e[30m\]"
 P_RED="\e[31m\]"
 P_GREEN="\e[32m\]"
 P_YELLOW="\e[33m\]"
 P_BLUE="\e[34m\]"
 P_VIOLET="\e[35m\]"
 P_CYAN="\e[36m\]"
+P_WHITE="\e[37m\]"
 
-PS1="${P_CYAN}[\t][\u@\h][\w]${P_DEFAULT}\n"
+P_BLACK_HI="\e[90m\]"
+P_RED_HI="\e[91m\]"
+P_GREEN_HI="\e[92m\]"
+P_YELLOW_HI="\e[93m\]"
+P_BLUE_HI="\e[94m\]"
+P_VIOLET_HI="\e[95m\]"
+P_CYAN_HI="\e[96m\]"
+P_WHITE_HI="\e[97m\]"
+
+parse_git_branch() {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
+}
+
+PS1="${P_GREEN_HI}[\t][\u@\h]${P_YELLOW_HI}[\w]${P_CYAN_HI}\$(parse_git_branch)${P_DEFAULT}\n"
 
 if [ "`uname -s`" == "Darwin" ]; then
   alias ls='ls -G -l -F'
@@ -43,6 +59,7 @@ export LC_ALL=en_US.utf8
 export LANG=en_US.utf8
 
 PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+PATH=$HOME/.linuxbrew/bin:$PATH
 PATH=$HOME/local/bin:$PATH
 PATH=$HOME/local/scripts:$PATH
 PATH=$HOME/local/neovim/bin:$PATH
@@ -61,6 +78,7 @@ export PATH
 export EDITOR=nvim
 
 MANPATH=/home/linuxbrew/.linuxbrew/share/man:$MANPATH
+MANPATH=/home/ytakebuc/.linuxbrew/share/man:$MANPATH
 MANPATH=$HOME/local/neovim/share/man:$MANPATH
 MANPATH=$HOME/local/tmux/share/man:$MANPATH
 MANPATH=$HOME/local/global/share/man:$MANPATH
@@ -68,6 +86,7 @@ MANPATH=$HOME/local/ag/share/man:$MANPATH
 export MANPATH
 
 INFOPATH=/home/linuxbrew/.linuxbrew/share/info:$INFOPATH
+INFOPATH=/home/ytakebuc/.linuxbrew/share/info:$INFOPATH
 export INFOPATH
 
 PKG_CONFIG_PATH=$HOME/local/libevent/lib/pkgconfig:$PKG_CONFIG_PATH
