@@ -35,14 +35,6 @@ hook_add = '''
     \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
     \                 <bang>0)
 
-  " Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
-  command! -bang -nargs=* Rg
-    \ call fzf#vim#grep(
-    \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-    \   <bang>0 ? fzf#vim#with_preview('up:60%')
-    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \   <bang>0)
-
   " Likewise, Files command with preview window
   command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>,
@@ -50,17 +42,61 @@ hook_add = '''
     \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
     \                 <bang>0)
 
+  function! s:getUserInput(prompt)
+    call inputsave()
+    let userInput = input(a:prompt)
+    call inputrestore()
+    return userInput
+  endfunction
+
+  function! s:defaultRgOptions()
+    return '--column --line-number --no-heading --color=always --smart-case'
+  endfunction
+
+  function! s:constructRgCommand()
+    return 'rg ' . s:defaultRgOptions() . ' -- ' .  s:getUserInput('Enter search term: ')
+  endfunction
+
+  function! s:constructRgWithTypeCommand()
+    return 'rg ' . s:defaultRgOptions() . ' --type ' . s:getUserInput('Enter file type: '). ' -- ' .  s:getUserInput('Enter search term: ')
+  endfunction
+
+  command! -bang -nargs=* Rg
+    \ call fzf#vim#grep(
+    \   s:constructRgCommand(), 1,
+    \   <bang>0 ? fzf#vim#with_preview('up:60%')
+    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \   <bang>0)
+
+  command! -bang -nargs=* RgWithType
+    \ call fzf#vim#grep(
+    \   s:constructRgWithTypeCommand(), 1,
+    \   <bang>0 ? fzf#vim#with_preview('up:60%')
+    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \   <bang>0)
+
+  " Command for git grep
+  " - fzf#vim#grep(command, with_column, [options], [fullscreen])
+  command! -bang -nargs=* GGrep
+    \ call fzf#vim#grep(
+    \   'git grep --color --extended-regexp --line-number -- ' . s:getUserInput('Enter search term: '), 0,
+    \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
+
+  " Insert mode completion
+  imap <c-t> <plug>(fzf-complete-file-ag)
+
   nmap <space> [fzf]
   nnoremap [fzf] <nop>
 
   nnoremap <silent> [fzf]f :<C-u>Files<cr><c-u>
+  nnoremap <silent> [fzf]gg :<C-u>GGrep<cr><c-u>
   nnoremap <silent> [fzf]gf :<C-u>GFiles<cr><c-u>
   nnoremap <silent> [fzf]gs :<C-u>GFiles?<cr><c-u>
   nnoremap <silent> [fzf]gl :<C-u>Commits<cr><c-u>
   nnoremap <silent> [fzf]gL :<C-u>BCommits<cr><c-u>
   nnoremap <silent> [fzf]b :<C-u>Buffers<cr><c-u>
-  nnoremap <silent> [fzf]a :<C-u>Ag<cr><c-u>
   nnoremap <silent> [fzf]r :<C-u>Rg<cr><c-u>
+  nnoremap <silent> [fzf]R :<C-u>RgWithType<cr><c-u>
   nnoremap <silent> [fzf]l :<C-u>Lines<cr><c-u>
   nnoremap <silent> [fzf]L :<C-u>BLines<cr><c-u>
   nnoremap <silent> [fzf]t :<C-u>Tags<cr><c-u>
