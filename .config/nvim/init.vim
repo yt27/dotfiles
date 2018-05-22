@@ -684,7 +684,7 @@ augroup END
   map <leader>wz :-tabnew %<cr>
 
   map <leader>qo :copen<cr>
-  map <leader>qc :cclose<cr>
+  map <leader>qq :cclose<cr>
 
   map <leader>s :set spell!<cr>
 
