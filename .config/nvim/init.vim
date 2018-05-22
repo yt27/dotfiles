@@ -683,6 +683,9 @@ augroup END
   map <leader>wv :vsplit<cr>
   map <leader>wz :-tabnew %<cr>
 
+  map <leader>qo :copen<cr>
+  map <leader>qc :cclose<cr>
+
   map <leader>s :set spell!<cr>
 
   " Show invisible characters
@@ -727,6 +730,8 @@ augroup END
     autocmd FileType vim setlocal fdm=indent keywordprg=:help
     autocmd FileType cpp setlocal iskeyword-=:
     autocmd FileType java,groovy,scala setlocal colorcolumn=120 textwidth=118
+    " Move the quickfix window to the bottom
+    autocmd FileType qf wincmd J
 
     augroup numbertoggle
       autocmd!
