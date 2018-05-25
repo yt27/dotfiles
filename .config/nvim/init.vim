@@ -531,6 +531,7 @@ augroup END
 " ui {{{
   " Enable syntax highlighting
   syntax on
+  set synmaxcol=200
 
   " Show the line and column number of the cursor position
   set ruler
