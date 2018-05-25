@@ -6,5 +6,5 @@
 
 [alias]
   # From http://durdn.com/blog/2012/11/22/must-have-git-aliases-advanced-examples/
-  ls = log --graph --pretty=format:"%Cblue[%ci]%C(yellow)[%h%Cred%d%C(yellow)]\\ %Creset%s%Cblue\\ [%cn]" --decorate
-  ll = log --graph --pretty=format:"%Cblue[%ci]%C(yellow)[%h%Cred%d%C(yellow)]\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+  ls = log --graph --pretty=format:"%C(#ff5555)[%ci]%C(#88ff88)[%h%C(#8888ff)%d%C(#88ff88)]\\ %Creset%s%C(#77ffff)\\ [%cn]" --decorate
+  ll = log --graph --pretty=format:"%C(#ff5555)[%ci]%C(#88ff88)[%h%C(#8888ff)%d%C(#88ff88)]\\ %Creset%s%C(#77ffff)\\ [%cn]" --decorate --numstat
