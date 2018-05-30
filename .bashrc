@@ -142,7 +142,7 @@ shopt -s histappend
 #export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 # End share history among sessions
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[ -f ~/.fzf.conf ] && source ~/.fzf.conf
 
 PATH="/home/ytakebuc/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="/home/ytakebuc/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
