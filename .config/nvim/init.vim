@@ -537,7 +537,7 @@ augroup END
   set ruler
 
   " Print the line number in front of each line.
-  set number relativenumber
+  " set number relativenumber
 
   " Always show the status line in the last window
   set laststatus=2
@@ -734,11 +734,11 @@ augroup END
     " Move the quickfix window to the bottom
     autocmd FileType qf wincmd J
 
-    augroup numbertoggle
-      autocmd!
-      autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-      autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
-    augroup END
+    " augroup numbertoggle
+    "   autocmd!
+    "   autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+    "   autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+    " augroup END
 
     " for .hql files
     au BufNewFile,BufRead *.hql set filetype=hive expandtab
