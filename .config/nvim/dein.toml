@@ -337,6 +337,12 @@ hook_add = '''
 repo = 'Yggdroot/indentLine'
 hook_add = '''
   let g:indentLine_leadingSpaceEnabled = 1
+
+  function! YtToggleIndentLineAndLeadingSpace()
+    execute 'IndentLinesToggle'
+    execute 'LeadingSpaceToggle'
+  endfunction
+  map <leader>il :call YtToggleIndentLineAndLeadingSpace()<cr>
 '''
 
 [[plugins]]
@@ -532,4 +538,10 @@ hook_add = '''
   noremap <silent> <C-g>i :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
   noremap <silent> <C-g>d :GscopeFind d <C-R><C-W><cr>
   noremap <silent> <C-g>a :GscopeFind a <C-R><C-W><cr>
+'''
+
+[[plugins]]
+repo = 'w0rp/ale'
+hook_add = '''
+  map <leader>al :ALEToggle<cr>
 '''
