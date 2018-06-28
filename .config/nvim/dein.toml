@@ -46,7 +46,7 @@ hook_add = '''
     call inputsave()
     let userInput = input(a:prompt)
     call inputrestore()
-    return userInput
+    return shellescape(userInput)
   endfunction
 
   function! s:defaultRgOptions()
