@@ -543,7 +543,8 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'w0rp/ale'
+repo = 'RRethy/vim-illuminate'
 hook_add = '''
-  map <leader>al :ALEToggle<cr>
+  hi link illuminatedWord Visual
+  map <leader>in :IlluminationToggle<cr>
 '''

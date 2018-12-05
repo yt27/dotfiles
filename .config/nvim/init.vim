@@ -697,6 +697,10 @@ augroup END
 
   "This unsets the "last search pattern" register by hitting return
   nnoremap <CR> :noh<CR><CR>
+
+  " Expand the directory of the current file anywhere at the command line by pressing %%
+  " http://vimcasts.org/episodes/the-edit-command
+  cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 "}}}
 
 " autocommand {{{

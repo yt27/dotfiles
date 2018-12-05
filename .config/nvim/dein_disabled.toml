@@ -116,3 +116,9 @@ hook_add = '''
   nmap <silent> <C-N>  <Plug>GoldenViewNext
   nmap <silent> <C-P>  <Plug>GoldenViewPrevious
 '''
+
+[[plugins]]
+repo = 'w0rp/ale'
+hook_add = '''
+  map <leader>al :ALEToggle<cr>
+'''
