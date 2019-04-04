@@ -12,6 +12,13 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'RRethy/vim-illuminate'
+hook_add = '''
+  hi link illuminatedWord Visual
+  map <leader>in :IlluminationToggle<cr>
+'''
+
+[[plugins]]
 repo = 'junegunn/fzf.vim'
 hook_add = '''
   " Enable per-command history.
@@ -87,7 +94,7 @@ hook_add = '''
   " Insert mode completion
   imap <c-t> <plug>(fzf-complete-file-ag)
 
-  nmap <space> [fzf]
+  nmap <leader>f [fzf]
   nnoremap [fzf] <nop>
 
   nnoremap <silent> [fzf]f :<C-u>Files<cr><c-u>
@@ -150,16 +157,97 @@ hook_add = '''
 repo = 'airblade/vim-rooter'
 
 [[plugins]]
-repo = 'Shougo/deoplete.nvim'
+repo = 'neoclide/coc.nvim'
 hook_add = '''
-  let g:deoplete#enable_at_startup = 1
-  " Tab to cycle thru matches
-  inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-  inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+  call coc#util#install()
 
-  let g:EclimCompletionMethod = 'omnifunc'
-  let g:deoplete#omni#input_patterns = {}
-  let g:deoplete#omni#input_patterns.java = '[^. *\t]\.\w*'
+  " always show signcolumns
+  set signcolumn=yes
+
+  inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+  " Use tab for trigger completion with characters ahead and navigate.
+  " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+  inoremap <silent><expr> <TAB>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ coc#refresh()
+  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+  endfunction
+
+  autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+  " Use K for show documentation in preview window
+  nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+  function! s:show_documentation()
+    if &filetype == 'vim'
+      execute 'h '.expand('<cword>')
+    else
+      call CocAction('doHover')
+    endif
+  endfunction
+
+	" Better display for messages
+	set cmdheight=2
+
+  " Highlight symbol under cursor on CursorHold
+	autocmd CursorHold * silent call CocActionAsync('highlight')
+
+	augroup mygroup
+		autocmd!
+    " Setup formatexpr specified filetype(s).
+		autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+		" Update signature help on jump placeholder
+		autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+	augroup end
+
+  nmap <leader>c [cocPrefix]
+  nnoremap [cocPrefix] <nop>
+
+  " Use `[c` and `]c` for navigate diagnostics
+  nmap <silent> [cocPrefix]D <Plug>(coc-diagnostic-prev)
+  nmap <silent> [cocPrefix]d <Plug>(coc-diagnostic-next)
+
+  " Remap keys for gotos
+  nmap <silent> [cocPrefix]gd <Plug>(coc-definition)
+  nmap <silent> [cocPrefix]gy <Plug>(coc-type-definition)
+  nmap <silent> [cocPrefix]gi <Plug>(coc-implementation)
+  nmap <silent> [cocPrefix]gr <Plug>(coc-references)
+
+  nmap <space> [cocListPrefix]
+  nnoremap [cocListPrefix] <nop>
+
+  " Using CocList
+  " Show MRU
+  nnoremap <silent> [cocListPrefix]m  :<C-u>CocList mru<cr>
+  " Show buffer
+  nnoremap <silent> [cocListPrefix]b  :<C-u>CocList buffers<cr>
+  " Show files
+  nnoremap <silent> [cocListPrefix]f  :<C-u>CocList files<cr>
+  " Show grep result
+  nnoremap <silent> [cocListPrefix]g  :<C-u>CocList -I grep -smartcase -regex<cr>
+  " Show quickfix
+  nnoremap <silent> [cocListPrefix]q  :<C-u>CocList quickfix<cr>
+  " Show all diagnostics
+  nnoremap <silent> [cocListPrefix]d  :<C-u>CocList diagnostics<cr>
+  " Manage extensions
+  nnoremap <silent> [cocListPrefix]e  :<C-u>CocList extensions<cr>
+  " Show commands
+  nnoremap <silent> [cocListPrefix]c  :<C-u>CocList commands<cr>
+  " Find symbol of current document
+  nnoremap <silent> [cocListPrefix]o  :<C-u>CocList outline<cr>
+  " Search workspace symbols
+  nnoremap <silent> [cocListPrefix]s  :<C-u>CocList -I symbols<cr>
+  " Do default action for next item.
+  nnoremap <silent> [cocListPrefix]j  :<C-u>CocNext<CR>
+  " Do default action for previous item.
+  nnoremap <silent> [cocListPrefix]k  :<C-u>CocPrev<CR>
+  " Resume latest coc list
+  nnoremap <silent> [cocListPrefix]p  :<C-u>CocListResume<CR>
 '''
 
 [[plugins]]
@@ -168,10 +256,19 @@ hook_add = '''
   let g:lightline = {
       \ 'colorscheme': 'PaperColor',
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'fugitive', 'filename' ] ]
+      \   'left': [
+      \     [ 'mode', 'paste' ],
+      \     [ 'fugitive' ],
+      \     [ 'readonly', 'filename' ]
+      \   ],
+      \   'right': [
+      \     [ 'lineinfo', 'percent' ],
+      \     [ 'fileformat', 'fileencoding', 'filetype' ],
+      \     [ 'cocstatus' ]
+      \   ]
       \ },
       \ 'component_function': {
+      \   'cocstatus': 'coc#status',
       \   'fugitive': 'LightlineFugitive',
       \   'readonly': 'LightlineReadonly',
       \   'modified': 'LightlineModified',
@@ -258,6 +355,9 @@ hook_add = '''
 
 [[plugins]]
 repo = 'vim-scripts/vcscommand.vim'
+hook_add = '''
+  let g:VCSCommandMapPrefix = "<leader>v"
+'''
 
 [[plugins]]
 repo = 'tpope/vim-fugitive'
@@ -321,19 +421,13 @@ repo = 'terryma/vim-multiple-cursors'
 repo = 'andymass/vim-matchup'
 
 [[plugins]]
-repo = 'tpope/vim-surround'
+repo = 'machakann/vim-sandwich'
 
 [[plugins]]
 repo = 'tpope/vim-dispatch'
 
 [[plugins]]
 repo = 'terryma/vim-expand-region'
-
-[[plugins]]
-repo = 'justinmk/vim-sneak'
-hook_add = '''
-  let g:sneak#streak = 0
-'''
 
 [[plugins]]
 repo = 'Yggdroot/indentLine'
@@ -509,42 +603,3 @@ hook_add = '''
 
 [[plugins]]
 repo = 'tommcdo/vim-exchange'
-
-[[plugins]]
-repo = 'ludovicchabant/vim-gutentags'
-
-[[plugins]]
-repo = 'skywind3000/gutentags_plus'
-hook_add = '''
-  " enable gtags module
-  let g:gutentags_modules = ['ctags', 'gtags_cscope']
-
-  " config project root markers
-  let g:gutentags_project_root = ['.git', '.svn']
-
-  " generate datebases in my cache directory, prevent gtags files polluting my project
-  let g:gutentags_cache_dir = expand('~/.cache/gutentags')
-
-  " forbid gutentags adding gtags databases
-  let g:gutentags_auto_add_gtags_cscope = 0
-
-  " Disable default key bindings
-  let g:gutentags_plus_nomap = 1
-
-  noremap <silent> <C-g>s :GscopeFind s <C-R><C-W><cr>
-  noremap <silent> <C-g>g :GscopeFind g <C-R><C-W><cr>
-  noremap <silent> <C-g>c :GscopeFind c <C-R><C-W><cr>
-  noremap <silent> <C-g>t :GscopeFind t <C-R><C-W><cr>
-  noremap <silent> <C-g>e :GscopeFind e <C-R><C-W><cr>
-  noremap <silent> <C-g>f :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
-  noremap <silent> <C-g>i :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
-  noremap <silent> <C-g>d :GscopeFind d <C-R><C-W><cr>
-  noremap <silent> <C-g>a :GscopeFind a <C-R><C-W><cr>
-'''
-
-[[plugins]]
-repo = 'RRethy/vim-illuminate'
-hook_add = '''
-  hi link illuminatedWord Visual
-  map <leader>in :IlluminationToggle<cr>
-'''

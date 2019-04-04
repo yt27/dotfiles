@@ -70,7 +70,10 @@ PATH=$HOME/local/global/bin:$PATH
 PATH=$HOME/local/python/bin:$PATH
 PATH=$HOME/local/python3/bin:$PATH
 PATH=$HOME/local/ag/bin:$PATH
+PATH=$HOME/local/cmatrix/bin:$PATH
 PATH=$HOME/local/eclipse:$PATH
+PATH=$HOME/local/node/bin:$PATH
+PATH=$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH
 PATH=$HOME/local/android-sdk-linux/tools:$PATH
 PATH=$HOME/local/android-sdk-linux/platform-tools:$PATH
 export PATH

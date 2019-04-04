@@ -1,4 +1,49 @@
 [[plugins]]
+repo = 'Shougo/deoplete.nvim'
+hook_add = '''
+  let g:deoplete#enable_at_startup = 1
+  " Tab to cycle thru matches
+  inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+  inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+
+  let g:EclimCompletionMethod = 'omnifunc'
+  let g:deoplete#omni#input_patterns = {}
+  let g:deoplete#omni#input_patterns.java = '[^. *\t]\.\w*'
+'''
+
+[[plugins]]
+repo = 'ludovicchabant/vim-gutentags'
+
+[[plugins]]
+repo = 'skywind3000/gutentags_plus'
+hook_add = '''
+  " enable gtags module
+  let g:gutentags_modules = ['ctags', 'gtags_cscope']
+
+  " config project root markers
+  let g:gutentags_project_root = ['.git', '.svn']
+
+  " generate datebases in my cache directory, prevent gtags files polluting my project
+  let g:gutentags_cache_dir = expand('~/.cache/gutentags')
+
+  " forbid gutentags adding gtags databases
+  let g:gutentags_auto_add_gtags_cscope = 0
+
+  " Disable default key bindings
+  let g:gutentags_plus_nomap = 1
+
+  noremap <silent> <C-g>s :GscopeFind s <C-R><C-W><cr>
+  noremap <silent> <C-g>g :GscopeFind g <C-R><C-W><cr>
+  noremap <silent> <C-g>c :GscopeFind c <C-R><C-W><cr>
+  noremap <silent> <C-g>t :GscopeFind t <C-R><C-W><cr>
+  noremap <silent> <C-g>e :GscopeFind e <C-R><C-W><cr>
+  noremap <silent> <C-g>f :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
+  noremap <silent> <C-g>i :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
+  noremap <silent> <C-g>d :GscopeFind d <C-R><C-W><cr>
+  noremap <silent> <C-g>a :GscopeFind a <C-R><C-W><cr>
+'''
+
+[[plugins]]
 repo = 'Shougo/denite.nvim'
 hook_add = '''
   nmap <space> [denite]
@@ -121,4 +166,10 @@ hook_add = '''
 repo = 'w0rp/ale'
 hook_add = '''
   map <leader>al :ALEToggle<cr>
+'''
+
+[[plugins]]
+repo = 'justinmk/vim-sneak'
+hook_add = '''
+  let g:sneak#streak = 0
 '''

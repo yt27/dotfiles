@@ -537,7 +537,7 @@ augroup END
   set ruler
 
   " Print the line number in front of each line.
-  " set number relativenumber
+  set number relativenumber
 
   " Always show the status line in the last window
   set laststatus=2
