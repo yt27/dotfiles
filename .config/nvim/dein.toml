@@ -158,8 +158,10 @@ repo = 'airblade/vim-rooter'
 
 [[plugins]]
 repo = 'neoclide/coc.nvim'
+merge = 0
+build = './install.sh nightly'
 hook_add = '''
-  call coc#util#install()
+  " call coc#util#install()
 
   " always show signcolumns
   set signcolumn=yes
@@ -212,6 +214,11 @@ hook_add = '''
   nmap <silent> [cocPrefix]D <Plug>(coc-diagnostic-prev)
   nmap <silent> [cocPrefix]d <Plug>(coc-diagnostic-next)
 
+  " Do default action for next item.
+  nmap <silent> [cocPrefix]n :<C-u>CocNext<CR>
+  " Do default action for previous item.
+  nmap <silent> [cocPrefix]p :<C-u>CocPrev<CR>
+
   " Remap keys for gotos
   nmap <silent> [cocPrefix]gd <Plug>(coc-definition)
   nmap <silent> [cocPrefix]gy <Plug>(coc-type-definition)
@@ -230,6 +237,8 @@ hook_add = '''
   nnoremap <silent> [cocListPrefix]f  :<C-u>CocList files<cr>
   " Show grep result
   nnoremap <silent> [cocListPrefix]g  :<C-u>CocList -I grep -smartcase -regex<cr>
+  " Show words result
+  nnoremap <silent> [cocListPrefix]w  :<C-u>CocList -I words<cr>
   " Show quickfix
   nnoremap <silent> [cocListPrefix]q  :<C-u>CocList quickfix<cr>
   " Show all diagnostics
@@ -242,12 +251,8 @@ hook_add = '''
   nnoremap <silent> [cocListPrefix]o  :<C-u>CocList outline<cr>
   " Search workspace symbols
   nnoremap <silent> [cocListPrefix]s  :<C-u>CocList -I symbols<cr>
-  " Do default action for next item.
-  nnoremap <silent> [cocListPrefix]j  :<C-u>CocNext<CR>
-  " Do default action for previous item.
-  nnoremap <silent> [cocListPrefix]k  :<C-u>CocPrev<CR>
   " Resume latest coc list
-  nnoremap <silent> [cocListPrefix]p  :<C-u>CocListResume<CR>
+  nnoremap <silent> [cocListPrefix]r  :<C-u>CocListResume<CR>
 '''
 
 [[plugins]]
@@ -356,7 +361,7 @@ hook_add = '''
 [[plugins]]
 repo = 'vim-scripts/vcscommand.vim'
 hook_add = '''
-  let g:VCSCommandMapPrefix = "<leader>v"
+  let g:VCSCommandMapPrefix = "<space>v"
 '''
 
 [[plugins]]
@@ -419,6 +424,9 @@ repo = 'terryma/vim-multiple-cursors'
 
 [[plugins]]
 repo = 'andymass/vim-matchup'
+hook_add = '''
+  let g:matchup_matchparen_status_offscreen = 0
+'''
 
 [[plugins]]
 repo = 'machakann/vim-sandwich'
