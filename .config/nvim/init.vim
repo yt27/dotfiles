@@ -73,11 +73,13 @@
       return
     endif
     "preparing new window
-    let l:tab_nr = tabpagenr('$')
     let l:cur_buf = bufnr('%')
-    if tabpagenr() != 1
+    if tabpagenr() > 1
+      let l:is_last_tab = tabpagenr() == tabpagenr('$')
+      let l:should_tabprev = l:is_last_tab == 0 || (l:is_last_tab == 1 && winnr('$') > 1)
+
       close!
-      if l:tab_nr == tabpagenr('$')
+      if l:should_tabprev
         tabprev
       endif
       sp
@@ -98,8 +100,10 @@
     let l:tab_nr = tabpagenr('$')
     let l:cur_buf = bufnr('%')
     if tabpagenr() < tab_nr
+      let l:should_tabnext = winnr('$') > 1
+
       close!
-      if l:tab_nr == tabpagenr('$')
+      if l:should_tabnext
         tabnext
       endif
       sp
@@ -692,6 +696,8 @@ augroup END
   " Show invisible characters
   nmap <leader>l :set list!<cr>
 
+  nmap <leader>nu :set number! relativenumber!<cr>
+
   nnoremap <C-w>. :call MoveToNextTab()<CR>
   nnoremap <C-w>, :call MoveToPrevTab()<CR>
 
@@ -730,7 +736,7 @@ augroup END
     autocmd FileType js,scss,css autocmd BufWritePre <buffer> call StripTrailingWhitespace()
     autocmd FileType css,scss setlocal foldmethod=marker foldmarker={,}
     autocmd FileType css,scss nnoremap <silent> <leader>S vi{:sort<CR>
-    autocmd FileType python setlocal foldmethod=indent tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+    autocmd FileType python setlocal foldmethod=indent tabstop=4 softtabstop=4 shiftwidth=4 expandtab
     autocmd FileType markdown setlocal nolist
     autocmd FileType vim setlocal fdm=indent keywordprg=:help
     autocmd FileType cpp setlocal iskeyword-=:
