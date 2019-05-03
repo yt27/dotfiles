@@ -129,291 +129,39 @@ augroup MyAutoCmd
   autocmd!
 augroup END
 
-" setup dein / neobundle {{{
-  if has('nvim')
-    let s:dein_dir = expand('~/.vim/dein')
-    let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+" setup dein {{{
+  let s:dein_dir = expand('~/.vim/dein')
+  let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
 
-    if &runtimepath !~# '/dein.vim'
-      if !isdirectory(s:dein_repo_dir)
-        execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
-      endif
-      execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+  if &runtimepath !~# '/dein.vim'
+    if !isdirectory(s:dein_repo_dir)
+      execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+    endif
+    execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+  endif
+
+  if dein#load_state(s:dein_dir)
+    call dein#begin(s:dein_dir)
+
+    call dein#add(s:dein_repo_dir)
+    if !has('nvim')
+      call dein#add('roxma/nvim-yarp')
+      call dein#add('roxma/vim-hug-neovim-rpc')
     endif
 
-    if dein#load_state(s:dein_dir)
-      call dein#begin(s:dein_dir)
+    let g:rc_dir    = expand('~/.config/nvim')
+    let s:toml      = g:rc_dir . '/dein.toml'
+    let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
 
-      let g:rc_dir    = expand('~/.config/nvim')
-      let s:toml      = g:rc_dir . '/dein.toml'
-      let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
+    call dein#load_toml(s:toml,      {'lazy': 0})
+    call dein#load_toml(s:lazy_toml, {'lazy': 1})
 
-      call dein#load_toml(s:toml,      {'lazy': 0})
-      call dein#load_toml(s:lazy_toml, {'lazy': 1})
+    call dein#end()
+    call dein#save_state()
+  endif
 
-      call dein#end()
-      call dein#save_state()
-    endif
-
-    if dein#check_install()
-      call dein#install()
-    endif
-  else
-    set rtp+=~/.vim/bundle/neobundle.vim
-    call neobundle#begin(expand('~/.vim/bundle/'))
-    NeoBundleFetch 'Shougo/neobundle.vim'
-
-    " plugin/mapping configuration {{{
-      NeoBundle 'a.vim' "{{{
-        let g:alternateSearchPath = 'reg:/include/src/g/,reg:/src/include/g/'
-        let g:alternateNoDefaultAlternate = 1
-      "}}}
-
-      NeoBundle 'tpope/vim-repeat'
-
-      NeoBundle 'tpope/vim-obsession'
-
-      NeoBundle 'chazy/cscope_maps'
-
-      NeoBundle 'taglist.vim' "{{{
-        " Toggle Tag list plugin
-        map <leader>tl :TlistToggle<cr>
-
-        let Tlist_Auto_Open = 0
-        let Tlist_Exit_OnlyWindow = 1
-        "let Tlist_Show_One_File = 1
-        "let Tlist_Display_Prototype = 1
-        let Tlist_File_Fold_Auto_Close = 1
-        let Tlist_WinWidth = 40
-      "}}}
-
-      NeoBundle 'git://repo.or.cz/vcscommand'
-
-      NeoBundle 'honza/vim-snippets'
-
-      NeoBundle 'Valloric/YouCompleteMe', {'vim_version':'7.3.584'} "{{{
-        let g:ycm_global_ycm_extra_conf = '~/.default_ycm_extra_conf.py'
-        let g:ycm_auto_trigger = 1
-        "let g:ycm_key_invoke_completion = '<tab>'
-        let g:ycm_always_populate_location_list = 1
-        let g:ycm_complete_in_comments = 1
-        let g:ycm_collect_identifiers_from_comments_and_strings = 1
-        let g:ycm_add_preview_to_completeopt = 1
-        let g:ycm_autoclose_preview_window_after_completion = 1
-        let g:ycm_confirm_extra_conf = 0
-        let g:ycm_goto_buffer_command = 'horizontal-split'
-
-        map <leader>yg :YcmComplete GoTo<cr>
-        map <leader>yd :YcmComplete GoToDeclaration<cr>
-        map <leader>yD :YcmComplete GoToDefinition<cr>
-      "}}}
-
-      NeoBundle 'SirVer/ultisnips' "{{{
-        " Trigger configuration. Do not use <tab> if you use
-        " https://github.com/Valloric/YouCompleteMe.
-        let g:UltiSnipsExpandTrigger = "<leader><tab>"
-        let g:UltiSnipsJumpForwardTrigger = "<leader><tab>"
-        let g:UltiSnipsJumpBackwardTrigger = "<leader><s-tab>"
-        let g:UltiSnipsListSnippets = "<leader>sn"
-        let g:UltiSnipsSnippetDirectories = ["snips-private", "UltiSnips"]
-
-        " " If you want :UltiSnipsEdit to split your window.
-        let g:UltiSnipsEditSplit = "vertical"
-      "}}}
-
-      NeoBundle 'tranngocthachs/gtags-cscope-vim-plugin'
-
-      NeoBundle 'vim-scripts/gtags.vim' "{{{
-        let GtagsCscope_Auto_Load = 1
-
-        " let GtagsCscope_Auto_Map = 1
-
-        let GtagsCscope_Quiet = 1
-
-        let GtagsCscope_Absolute_Path = 1
-      "}}}
-
-      NeoBundle 'Shougo/unite.vim' "{{{
-        let bundle = neobundle#get('unite.vim')
-        function! bundle.hooks.on_source(bundle)
-          call unite#filters#matcher_default#use(['matcher_fuzzy'])
-          call unite#filters#sorter_default#use(['sorter_rank'])
-          call unite#custom#source('line,outline','matchers','matcher_fuzzy')
-          call unite#custom#profile('default', 'context', {
-                \ 'start_insert': 1,
-                \ 'direction': 'topleft',
-                \ })
-        endfunction
-
-        let g:unite_data_directory = s:get_cache_dir('unite')
-        let g:unite_source_history_yank_enable = 1
-        let g:unite_source_rec_max_cache_files = 5000
-
-        if executable('ag')
-          let g:unite_source_grep_command = 'ag'
-          let g:unite_source_grep_default_opts = '--nocolor --line-numbers --nogroup -S'
-          let g:unite_source_grep_recursive_opt = ''
-        elseif executable('ack')
-          let g:unite_source_grep_command = 'ack'
-          let g:unite_source_grep_default_opts = '--no-heading --no-color'
-          let g:unite_source_grep_recursive_opt = ''
-        endif
-
-        nmap <space> [unite]
-        nnoremap [unite] <nop>
-
-        if s:is_windows
-          nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec:! buffer file_mru bookmark<cr><c-u>
-          nnoremap <silent> [unite]f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec:!<cr><c-u>
-        else
-          nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async:! buffer file_mru bookmark<cr><c-u>
-          nnoremap <silent> [unite]f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async:!<cr><c-u>
-        endif
-        nnoremap <silent> [unite]y :<C-u>Unite -buffer-name=yanks history/yank<cr>
-        nnoremap <silent> [unite]l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
-        nnoremap <silent> [unite]b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
-        nnoremap <silent> [unite]/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
-        nnoremap <silent> [unite]m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
-        nnoremap <silent> [unite]s :<C-u>Unite -quick-match buffer<cr>
-      "}}}
-
-      NeoBundleLazy 'Shougo/neomru.vim', {'autoload':{'unite_sources':'file_mru'}} "{{{
-        nnoremap <silent> [unite]e :<C-u>Unite -buffer-name=recent file_mru<cr>
-      "}}}
-
-      NeoBundleLazy 'tsukkee/unite-tag', {'autoload':{'unite_sources':['tag','tag/file']}} "{{{
-        nnoremap <silent> [unite]t :<C-u>Unite -auto-resize -buffer-name=tag tag tag/file<cr>
-      "}}}
-
-      NeoBundleLazy 'Shougo/unite-outline', {'autoload':{'unite_sources':'outline'}} "{{{
-        nnoremap <silent> [unite]o :<C-u>Unite -auto-resize -buffer-name=outline outline<cr>
-      "}}}
-
-      NeoBundleLazy 'Shougo/unite-help', {'autoload':{'unite_sources':'help'}} "{{{
-        nnoremap <silent> [unite]h :<C-u>Unite -auto-resize -buffer-name=help help<cr>
-      "}}}
-
-      NeoBundle 'kmnk/vim-unite-svn'
-
-      NeoBundle 'Shougo/vimproc.vim', {
-        \ 'build': {
-          \ 'mac': 'make -f make_mac.mak',
-          \ 'unix': 'make -f make_unix.mak',
-          \ 'cygwin': 'make -f make_cygwin.mak',
-          \ 'windows': '"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\nmake.exe" make_msvc32.mak',
-        \ },
-      \ }
-
-      NeoBundle 'Shougo/vimshell.vim'
-
-      NeoBundle 'mbbill/undotree' "{{{{
-        nmap <leader>ut :UndotreeToggle<cr>
-      "}}}}
-
-      NeoBundle 'tomtom/tcomment_vim'
-
-      NeoBundle 'terryma/vim-multiple-cursors'
-
-      "NeoBundle 'jiangmiao/auto-pairs'
-
-      NeoBundle 'edsono/vim-matchit'
-
-      NeoBundle 'tpope/vim-surround'
-      NeoBundle 'tpope/vim-dispatch'
-
-      NeoBundleLazy 'pangloss/vim-javascript', {'autoload':{'filetypes':['javascript']}}
-      NeoBundleLazy 'leshill/vim-json', {'autoload':{'filetypes':['javascript','json']}}
-
-      NeoBundle 'terryma/vim-expand-region'
-
-      NeoBundle 'justinmk/vim-sneak' "{{{
-        let g:sneak#streak = 0
-      "}}}
-
-      " NeoBundle 'nathanaelkane/vim-indent-guides' "{{{
-      "   let g:indent_guides_start_level=1
-      "   let g:indent_guides_guide_size=1
-      "   let g:indent_guides_enable_on_vim_startup=1
-      "   let g:indent_guides_color_change_percent=3
-      "   if !has('gui_running')
-      "     let g:indent_guides_auto_colors=0
-      "     function! s:indent_set_console_colors()
-      "       hi IndentGuidesOdd ctermbg=235
-      "       hi IndentGuidesEven ctermbg=236
-      "     endfunction
-      "     autocmd VimEnter,Colorscheme * call s:indent_set_console_colors()
-      "   endif
-      "}}}
-
-      NeoBundle 'Yggdroot/indentLine' "{{{
-      "}}}
-
-      NeoBundleLazy 'guns/xterm-color-table.vim', {'autoload':{'commands':'XtermColorTable'}}
-
-      NeoBundle 'vim-scripts/multisearch.vim' "{{{
-        function! s:initMsearch()
-          " Add your Msearch initialization commands here ...
-          Msearch highlight add ctermbg=blue
-          Msearch highlight add ctermbg=yellow
-          Msearch highlight add ctermbg=green
-          Msearch highlight add ctermbg=cyan
-          Msearch highlight add ctermbg=magenta
-          Msearch highlight add ctermbg=lightyellow
-          Msearch highlight add ctermbg=lightred
-          Msearch highlight add ctermbg=lightgreen
-          Msearch highlight add ctermbg=lightcyan
-          Msearch highlight add ctermbg=lightmagenta
-          Msearch highlight add ctermbg=lightgray
-          Msearch highlight add ctermbg=brown
-          Msearch highlight add ctermbg=darkgreen
-          Msearch highlight add ctermbg=darkmagenta
-          Msearch highlight add ctermbg=darkred
-
-          map <leader>m/ :Msearch add 
-          map <leader>mn :Msearch next<cr>
-          map <leader>mN :Msearch previous<cr>
-        endfunction
-        autocmd VimEnter * call s:initMsearch()
-      "}}}
-
-      nnoremap <leader>nbu :Unite neobundle/update -vertical -no-start-insert<cr>
-
-      NeoBundle 'jrosiek/vim-mark' "{{{
-        let g:mwDefaultHighlightingPalette = 'maximum'
-      "}}}
-
-      NeoBundle 'zhaocai/GoldenView.Vim' "{{{
-        let g:goldenview__enable_at_startup = 0
-
-        " 1. split to tiled windows
-        nmap <silent> <C-L>  <Plug>GoldenViewSplit
-
-        " 2. quickly switch current window with the main pane
-        " and toggle back
-        nmap <silent> <F8>   <Plug>GoldenViewSwitchMain
-        nmap <silent> <S-F8> <Plug>GoldenViewSwitchToggle
-
-        " 3. jump to next and previous window
-        nmap <silent> <C-N>  <Plug>GoldenViewNext
-        nmap <silent> <C-P>  <Plug>GoldenViewPrevious
-      "}}}
-
-      NeoBundle 'lyuts/vim-rtags' "{{{
-        let g:rtagsUserLocationList = 0
-        nnoremap <silent> [unite]rr :<C-u>Unite -buffer-name=rtagsRef rtags/references<cr>
-        nnoremap <silent> [unite]rs :<C-u>Unite -buffer-name=rtagsSymbol rtags/symbol<cr>
-      "}}}
-
-      NeoBundle 'hewes/unite-gtags' "{{{
-        nnoremap <silent> [unite]gc :<C-u>Unite -buffer-name=gtagsContext gtags/context<cr>
-        nnoremap <silent> [unite]gr :<C-u>Unite -buffer-name=gtagsRef gtags/ref<cr>
-        nnoremap <silent> [unite]gd :<C-u>Unite -buffer-name=gtagsDef gtags/def<cr>
-        nnoremap <silent> [unite]gg :<C-u>Unite -buffer-name=gtagsGrep gtags/grep<cr>
-        nnoremap <silent> [unite]gp :<C-u>Unite -buffer-name=gtagsPath gtags/path<cr>
-      "}}}
-    "}}}
-
-    call neobundle#end()
+  if dein#check_install()
+    call dein#install()
   endif
 "}}}
 

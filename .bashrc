@@ -58,11 +58,9 @@ fi
 export LC_ALL=en_US.utf8
 export LANG=en_US.utf8
 
-PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
-PATH=$HOME/.linuxbrew/bin:$PATH
 PATH=$HOME/local/bin:$PATH
 PATH=$HOME/local/scripts:$PATH
-PATH=$HOME/local/neovim/bin:$PATH
+PATH=$HOME/local/nvim/bin:$PATH
 PATH=$HOME/local/git/bin:$PATH
 PATH=$HOME/local/tmux/bin:$PATH
 PATH=$HOME/local/rtags/bin:$PATH
@@ -73,6 +71,7 @@ PATH=$HOME/local/ag/bin:$PATH
 PATH=$HOME/local/cmatrix/bin:$PATH
 PATH=$HOME/local/eclipse:$PATH
 PATH=$HOME/local/node/bin:$PATH
+PATH=$HOME/.local/bin:$PATH
 PATH=$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH
 PATH=$HOME/local/android-sdk-linux/tools:$PATH
 PATH=$HOME/local/android-sdk-linux/platform-tools:$PATH
@@ -152,5 +151,3 @@ PERL5LIB="/home/ytakebuc/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5
 PERL_LOCAL_LIB_ROOT="/home/ytakebuc/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
 PERL_MB_OPT="--install_base \"/home/ytakebuc/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/ytakebuc/perl5"; export PERL_MM_OPT;
-
-eval $(thefuck --alias)
