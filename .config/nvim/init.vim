@@ -180,6 +180,8 @@ augroup END
      set t_Co=256
   endif
 
+  set termguicolors
+
   " Allow backspacing over autoindent and over the start of insert
   set backspace=indent,eol,start
 
