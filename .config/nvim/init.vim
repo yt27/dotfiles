@@ -231,7 +231,7 @@ augroup END
 
   " Highlight the screen line of the cursor
   " No cursorline as it's causing bad render perf on Mac's Terminal.app.
-  " set cursorline
+  set cursorline
 
   set cscopetag
   set cscopeprg=gtags-cscope

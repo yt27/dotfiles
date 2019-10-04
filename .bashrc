@@ -26,7 +26,15 @@ parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
 }
 
-PS1="${P_GREEN_HI}[\t][\u@\h]${P_YELLOW_HI}[\w]${P_CYAN_HI}\$(parse_git_branch)${P_DEFAULT}\n"
+PS1="${P_GREEN_HI}[\D{%Y/%m/%d %H:%M:%S}][\u@\h]${P_YELLOW_HI}[\w]${P_CYAN_HI}\$(parse_git_branch)${P_DEFAULT}\n"
+
+# function _update_ps1() {
+#     PS1=$(powerline-shell $?)
+# }
+#
+# if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
+#     PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+# fi
 
 if [ "`uname -s`" == "Darwin" ]; then
   alias ls='ls -G -l -F'
@@ -37,6 +45,8 @@ alias rm='rm -i'
 alias cp='cp -ir'
 alias mv='mv -i'
 alias scp='scp -r'
+
+alias vim='nvim'
 
 alias tmux='tmux -2' # for better colors
 
@@ -60,6 +70,7 @@ export LANG=en_US.utf8
 
 PATH=$HOME/local/bin:$PATH
 PATH=$HOME/local/scripts:$PATH
+PATH=$HOME/local/zsh/bin:$PATH
 PATH=$HOME/local/nvim/bin:$PATH
 PATH=$HOME/local/git/bin:$PATH
 PATH=$HOME/local/tmux/bin:$PATH

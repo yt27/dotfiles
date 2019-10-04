@@ -228,14 +228,19 @@ hook_add = '''
   " Using CocList
   " Show MRU
   nnoremap <silent> [cocListPrefix]m  :<C-u>CocList mru<cr>
+  nnoremap <silent> [cocListPrefix]M  :<C-u>CocList --normal mru <c-r><c-w><cr>
   " Show buffer
   nnoremap <silent> [cocListPrefix]b  :<C-u>CocList buffers<cr>
+  nnoremap <silent> [cocListPrefix]B  :<C-u>CocList --normal buffers <c-r><c-w><cr>
   " Show files
   nnoremap <silent> [cocListPrefix]f  :<C-u>CocList files<cr>
+  nnoremap <silent> [cocListPrefix]F  :<C-u>CocList --normal files <c-r><c-w><cr>
   " Show grep result
   nnoremap <silent> [cocListPrefix]g  :<C-u>CocList -I grep -smartcase -regex<cr>
+  nnoremap <silent> [cocListPrefix]G  :<C-u>CocList --normal grep -smartcase -regex <c-r><c-w><cr>
   " Show words result
   nnoremap <silent> [cocListPrefix]w  :<C-u>CocList -I words<cr>
+  nnoremap <silent> [cocListPrefix]W  :<C-u>CocList --normal words <c-r><c-w><cr>
   " Show quickfix
   nnoremap <silent> [cocListPrefix]q  :<C-u>CocList quickfix<cr>
   " Show all diagnostics
@@ -405,9 +410,6 @@ hook_add = '''
 repo = 'vim-scripts/gtags.vim'
 
 [[plugins]]
-repo = 'tpope/vim-vinegar'
-
-[[plugins]]
 repo = 'mbbill/undotree'
 hook_add = '''
   nmap <leader>ut :UndotreeToggle<cr>
@@ -444,6 +446,8 @@ hook_add = '''
     execute 'LeadingSpaceToggle'
   endfunction
   map <leader>il :call YtToggleIndentLineAndLeadingSpace()<cr>
+
+  let g:indentLine_bufNameExclude = ['NERD_tree.*']
 '''
 
 [[plugins]]
@@ -479,17 +483,11 @@ hook_add = '''
 [[plugins]]
 repo = 'google/vim-searchindex'
 
-[[plugins]] # カラースキーマ
-repo = 'w0ng/vim-hybrid'
-hook_add = '''
-  set background=dark
-  " colorscheme 設定は source 後に行う必要があるので VimEnter で行う。
-  " 但し Colorscheme イベントの発生が抑制されないよう nented を付ける。
-  au MyAutoCmd VimEnter * nested colorscheme hybrid
-'''
-
 [[plugins]]
 repo = 'jiangmiao/auto-pairs'
+
+[[plugins]]
+repo = 'tpope/vim-vinegar'
 
 [[plugins]]
 repo = 'scrooloose/nerdtree'
@@ -498,6 +496,7 @@ hook_add = '''
   " Toggle NERDTree list plugin
   map <leader>ntt :NERDTreeToggle<cr>
   map <leader>ntf :NERDTreeFind<cr>
+  "nmap - :NERDTreeFind<cr>
 
   let NERDTreeHijackNetrw=1
 
@@ -614,3 +613,13 @@ hook_add = '''
 
 [[plugins]]
 repo = 'tommcdo/vim-exchange'
+
+[[plugins]]
+repo = 'w0ng/vim-hybrid'
+hook_add = '''
+  set background=dark
+  au MyAutoCmd VimEnter * nested colorscheme hybrid
+'''
+
+[[plugins]]
+repo = 'ryanoasis/vim-devicons'
