@@ -118,7 +118,19 @@
 
 " init setup {{{
   set nocompatible
-  set all& "reset everything to their defaults
+  if has('vim_starting')
+    " Saving/restoring colums/lines before/after set all& as the window size
+    " is messed up due to https://github.com/neovim/neovim/issues/11066
+    let s:columns_bak = &columns
+    let s:lines_bak = &lines
+
+    set all& "reset everything to their defaults
+
+    let &columns = s:columns_bak
+    let &lines = s:lines_bak
+    unlet s:columns_bak
+    unlet s:lines_bak
+  endif
   if s:is_windows
     set rtp+=~/.vim
   endif
