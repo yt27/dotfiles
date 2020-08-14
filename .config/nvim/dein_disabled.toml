@@ -1,3 +1,53 @@
+[[plugins]]
+repo = 'haya14busa/incsearch-easymotion.vim'
+
+[[plugins]]
+repo = 'joereynolds/gtags-scope'
+hook_add = '''
+  let g:GtagsCscope_Auto_Load = 1
+
+  let g:GtagsCscope_Auto_Map = 1
+
+  "let g:GtagsCscope_Quiet = 1
+
+  let g:GtagsCscope_Absolute_Path = 1
+'''
+
+[[plugins]]
+repo = 'haya14busa/incsearch.vim'
+
+hook_add = '''
+  map /  <Plug>(incsearch-forward)
+  map ?  <Plug>(incsearch-backward)
+  map g/ <Plug>(incsearch-stay)
+'''
+
+[[plugins]]
+repo = 'haya14busa/incsearch-fuzzy.vim'
+
+hook_add = '''
+  " You can use other keymappings like <C-l> instead of <CR> if you want to
+  " use these mappings as default search and somtimes want to move cursor with
+  " EasyMotion.
+  function! s:incsearch_fuzzy_config(...) abort
+    return incsearch#util#deepextend(deepcopy({
+    \   'converters': [incsearch#config#fuzzy#converter()],
+    \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+    \   'keymap': {
+    \     "\<c-e>": '<Over>(easymotion)'
+    \   },
+    \   'is_expr': 0
+    \ }), get(a:, 1, {}))
+  endfunction
+
+  noremap <silent><expr> f/  incsearch#go(<SID>incsearch_fuzzy_config())
+  noremap <silent><expr> f?  incsearch#go(<SID>incsearch_fuzzy_config({'command': '?'}))
+  noremap <silent><expr> fg/ incsearch#go(<SID>incsearch_fuzzy_config({'is_stay': 1}))
+'''
+
+[[plugins]]
+repo = 'jiangmiao/auto-pairs'
+
 [[plugins]] # カラースキーマ
 repo = 'noahfrederick/vim-noctu'
 hook_add = '''

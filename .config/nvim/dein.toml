@@ -255,6 +255,28 @@ hook_add = '''
   nnoremap <silent> [cocListPrefix]s  :<C-u>CocList -I symbols<cr>
   " Resume latest coc list
   nnoremap <silent> [cocListPrefix]r  :<C-u>CocListResume<CR>
+
+  let g:coc_explorer_global_presets = {
+  \   'floating': {
+  \      'position': 'floating',
+  \   },
+  \   'floatingLeftside': {
+  \      'position': 'floating',
+  \      'floating-position': 'left-center',
+  \      'floating-width': 50,
+  \   },
+  \   'floatingRightside': {
+  \      'position': 'floating',
+  \      'floating-position': 'left-center',
+  \      'floating-width': 50,
+  \   },
+  \   'simplify': {
+  \     'file.child.template': '[selection | clip | 1] [indent][icon | 1] [filename omitCenter 1]'
+  \   }
+  \ }
+
+  " Use preset argument to open it
+  nnoremap <silent> [cocPrefix]e :CocCommand explorer --preset floating<CR>
 '''
 
 [[plugins]]
@@ -265,7 +287,7 @@ hook_add = '''
       \ 'active': {
       \   'left': [
       \     [ 'mode', 'paste' ],
-      \     [ 'fugitive' ],
+      \     [ 'gitbranch' ],
       \     [ 'readonly', 'filename' ]
       \   ],
       \   'right': [
@@ -276,7 +298,7 @@ hook_add = '''
       \ },
       \ 'component_function': {
       \   'cocstatus': 'coc#status',
-      \   'fugitive': 'LightlineFugitive',
+      \   'gitbranch': 'FugitiveHead',
       \   'readonly': 'LightlineReadonly',
       \   'modified': 'LightlineModified',
       \   'filename': 'LightlineFilename'
@@ -311,14 +333,6 @@ hook_add = '''
           \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
           \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
   endfunction
-
-  function! LightlineFugitive()
-    if exists("*fugitive#head")
-      let branch = fugitive#head()
-      return branch !=# '' ? ' '.branch : ''
-    endif
-    return ''
-  endfunction
 '''
 
 [[plugins]]
@@ -345,8 +359,8 @@ hook_add = '''
 
   let Tlist_Auto_Open = 0
   let Tlist_Exit_OnlyWindow = 1
-  "let Tlist_Show_One_File = 1
-  "let Tlist_Display_Prototype = 1
+  let Tlist_Show_One_File = 1
+  let Tlist_Display_Prototype = 1
   let Tlist_File_Fold_Auto_Close = 1
   let Tlist_WinWidth = 40
 '''
@@ -392,18 +406,6 @@ hook_add = '''
 
   " " If you want :UltiSnipsEdit to split your window.
   let g:UltiSnipsEditSplit = "vertical"
-'''
-
-[[plugins]]
-repo = 'joereynolds/gtags-scope'
-hook_add = '''
-  let g:GtagsCscope_Auto_Load = 1
-
-  let g:GtagsCscope_Auto_Map = 1
-
-  "let g:GtagsCscope_Quiet = 1
-
-  let g:GtagsCscope_Absolute_Path = 1
 '''
 
 [[plugins]]
@@ -484,9 +486,6 @@ hook_add = '''
 repo = 'google/vim-searchindex'
 
 [[plugins]]
-repo = 'jiangmiao/auto-pairs'
-
-[[plugins]]
 repo = 'tpope/vim-vinegar'
 
 [[plugins]]
@@ -551,55 +550,23 @@ hook_add = '''
   let g:EasyMotion_use_upper = 1
   let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;'
 
-  map <Leader>e <Plug>(easymotion-prefix)
-'''
+  nmap <leader>e [easymotion]
+  nnoremap [easymotion] <nop>
 
-[[plugins]]
-repo = 'haya14busa/incsearch-easymotion.vim'
+  " <Leader>f{char} to move to {char}
+  map  [easymotion]f <Plug>(easymotion-bd-f)
+  nmap [easymotion]f <Plug>(easymotion-overwin-f)
 
-[[plugins]]
-repo = 'haya14busa/incsearch.vim'
+  " s{char}{char} to move to {char}{char}
+  nmap s <Plug>(easymotion-overwin-f2)
 
-hook_add = '''
-  " You can use other keymappings like <C-l> instead of <CR> if you want to
-  " use these mappings as default search and somtimes want to move cursor with
-  " EasyMotion.
-  function! s:incsearch_config(...) abort
-    return incsearch#util#deepextend(deepcopy({
-    \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
-    \   'keymap': {
-    \     "\<c-e>": '<Over>(easymotion)'
-    \   },
-    \   'is_expr': 0
-    \ }), get(a:, 1, {}))
-  endfunction
+  " Move to line
+  map [easymotion]l <Plug>(easymotion-bd-jk)
+  nmap [easymotion]l <Plug>(easymotion-overwin-line)
 
-  noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
-  noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
-  noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
-'''
-
-[[plugins]]
-repo = 'haya14busa/incsearch-fuzzy.vim'
-
-hook_add = '''
-  " You can use other keymappings like <C-l> instead of <CR> if you want to
-  " use these mappings as default search and somtimes want to move cursor with
-  " EasyMotion.
-  function! s:incsearch_fuzzy_config(...) abort
-    return incsearch#util#deepextend(deepcopy({
-    \   'converters': [incsearch#config#fuzzy#converter()],
-    \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
-    \   'keymap': {
-    \     "\<c-e>": '<Over>(easymotion)'
-    \   },
-    \   'is_expr': 0
-    \ }), get(a:, 1, {}))
-  endfunction
-
-  noremap <silent><expr> f/  incsearch#go(<SID>incsearch_fuzzy_config())
-  noremap <silent><expr> f?  incsearch#go(<SID>incsearch_fuzzy_config({'command': '?'}))
-  noremap <silent><expr> fg/ incsearch#go(<SID>incsearch_fuzzy_config({'is_stay': 1}))
+  " Move to word
+  map  [easymotion]w <Plug>(easymotion-bd-w)
+  nmap [easymotion]w <Plug>(easymotion-overwin-w)
 '''
 
 [[plugins]]
@@ -623,3 +590,7 @@ hook_add = '''
 
 [[plugins]]
 repo = 'ryanoasis/vim-devicons'
+
+
+[[plugins]]
+repo = 'wsdjeg/dein-ui.vim'
