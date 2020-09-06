@@ -147,18 +147,16 @@ fi
 # Begin share history among sessions
 # https://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
 # Avoid duplicates
+export HISTTIMEFORMAT='%F %T '
 export HISTCONTROL=ignoredups:erasedups  
 # When the shell exits, append to the history file instead of overwriting it
 shopt -s histappend
+# http://jesrui.sdf-eu.org/remember-all-your-bash-history-forever.html
+# attempt to save all lines of a multiple-line command in the same history entry
+shopt -s cmdhist
+# save multi-line commands to the history with embedded newlines
+shopt -s lithist
 
 # After each command, append to the history file and reread it
 #export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 # End share history among sessions
-
-[ -f ~/.fzf.conf ] && source ~/.fzf.conf
-
-PATH="/home/ytakebuc/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/ytakebuc/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/ytakebuc/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/ytakebuc/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/ytakebuc/perl5"; export PERL_MM_OPT;

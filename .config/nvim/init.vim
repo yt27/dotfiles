@@ -526,7 +526,7 @@ call plug#end()
     " Set noexpandtab automatically when editing makefiles
     autocmd FileType make setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
 
-    autocmd FileType js,scss,css autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+    autocmd FileType java,js,scss,css autocmd BufWritePre <buffer> call StripTrailingWhitespace()
     autocmd FileType css,scss setlocal foldmethod=marker foldmarker={,}
     autocmd FileType css,scss nnoremap <silent> <leader>S vi{:sort<CR>
     autocmd FileType python setlocal foldmethod=indent tabstop=4 softtabstop=4 shiftwidth=4 expandtab
@@ -657,7 +657,7 @@ call plug#end()
   nnoremap <silent> [fzf]h :<C-u>Helptags<cr><c-u>
 "}}}
 
-" plugin: fzf {{{
+" plugin: coc {{{
   " call coc#util#install()
 
   let g:coc_global_extensions = [
