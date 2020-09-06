@@ -1,0 +1,23 @@
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- clean: ['~']
+
+- link:
+    ~/.config/:
+      glob: true
+      path: config/*
+    ~/.bash_profile:
+    ~/.bashrc:
+    ~/.fzf.conf:
+    ~/.gitconfig:
+    ~/.inputrc:
+    ~/.tmux.conf:
+    ~/.tmuxline.snapshot:
+    ~/.vim: config/nvim
+    ~/.vimrc: config/nvim/init.vim
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]
