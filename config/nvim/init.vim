@@ -154,10 +154,6 @@ endif
 call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-  " for coc-fzf-preview
-  Plug 'yuki-ycino/fzf-preview.vim', { 'branch': 'release', 'do': ':UpdateRemotePlugins' }
 
   " Color scheme
   Plug 'kristijanhusak/vim-hybrid-material'
@@ -174,6 +170,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-obsession'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-vinegar'
+  Plug 'tpope/vim-unimpaired'
   Plug 'Yggdroot/indentLine'
 
   " Tmux
@@ -568,238 +565,51 @@ call plug#end()
   let g:fzf_history_dir = '~/.local/share/fzf-history'
 
   let g:fzf_commits_log_options = '--graph --pretty=format:"%C(#ff5555)[%ci]%C(#88ff88)[%h] %Creset%s%C(#77ffff)\\ [%cn]" --decorate'
+  " let g:fzf_preview_window = ['up:40%', 'ctrl-/']
 
-  " Augmenting Ag command using fzf#vim#with_preview function
-  "   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
-  "     * For syntax-highlighting, Ruby and any of the following tools are required:
-  "       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
-  "       - CodeRay: http://coderay.rubychan.de/
-  "       - Rouge: https://github.com/jneen/rouge
-  "
-  "   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
-  "   :Ag! - Start fzf in fullscreen and display the preview window above
-  command! -bang -nargs=* Ag
-    \ call fzf#vim#ag(<q-args>,
-    \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-    \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \                 <bang>0)
-
-  " Likewise, Files command with preview window
-  command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>,
-    \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-    \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \                 <bang>0)
-
-  function! s:getUserInput(prompt)
-    call inputsave()
-    let userInput = input(a:prompt)
-    call inputrestore()
-    return shellescape(userInput)
-  endfunction
-
-  function! s:defaultRgOptions()
-    return '--column --line-number --no-heading --color=always --smart-case'
-  endfunction
-
-  function! s:constructRgCommand()
-    return 'rg ' . s:defaultRgOptions() . ' -- ' .  s:getUserInput('Enter search term: ')
-  endfunction
-
-  function! s:constructRgWithTypeCommand()
-    return 'rg ' . s:defaultRgOptions() . ' --type ' . s:getUserInput('Enter file type: '). ' -- ' .  s:getUserInput('Enter search term: ')
-  endfunction
-
-  command! -bang -nargs=* Rg
-    \ call fzf#vim#grep(
-    \   s:constructRgCommand(), 1,
-    \   <bang>0 ? fzf#vim#with_preview('up:60%')
-    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \   <bang>0)
-
-  command! -bang -nargs=* RgWithType
-    \ call fzf#vim#grep(
-    \   s:constructRgWithTypeCommand(), 1,
-    \   <bang>0 ? fzf#vim#with_preview('up:60%')
-    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \   <bang>0)
-
-  " Command for git grep
-  " - fzf#vim#grep(command, with_column, [options], [fullscreen])
   command! -bang -nargs=* GGrep
     \ call fzf#vim#grep(
-    \   'git grep --color --extended-regexp --line-number -- ' . s:getUserInput('Enter search term: '), 0,
-    \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
+    \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+    \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 
-  " Insert mode completion
-  imap <c-t> <plug>(fzf-complete-file-ag)
+  function! RipgrepFzf(query, fullscreen)
+    let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+    let initial_command = printf(command_fmt, shellescape(a:query))
+    let reload_command = printf(command_fmt, '{q}')
+    let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+    call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+  endfunction
 
-  nmap <leader>f [fzf]
+  command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+  nmap <space> [fzf]
   nnoremap [fzf] <nop>
 
-  nnoremap <silent> [fzf]f :<C-u>Files<cr><c-u>
-  nnoremap <silent> [fzf]gg :<C-u>GGrep<cr><c-u>
-  nnoremap <silent> [fzf]gf :<C-u>GFiles<cr><c-u>
-  nnoremap <silent> [fzf]gs :<C-u>GFiles?<cr><c-u>
-  nnoremap <silent> [fzf]gl :<C-u>Commits<cr><c-u>
-  nnoremap <silent> [fzf]gL :<C-u>BCommits<cr><c-u>
-  nnoremap <silent> [fzf]b :<C-u>Buffers<cr><c-u>
-  nnoremap <silent> [fzf]r :<C-u>Rg<cr><c-u>
-  nnoremap <silent> [fzf]R :<C-u>RgWithType<cr><c-u>
-  nnoremap <silent> [fzf]l :<C-u>Lines<cr><c-u>
-  nnoremap <silent> [fzf]L :<C-u>BLines<cr><c-u>
-  nnoremap <silent> [fzf]t :<C-u>Tags<cr><c-u>
-  nnoremap <silent> [fzf]T :<C-u>BTags<cr><c-u>
-  nnoremap <silent> [fzf]m :<C-u>Marks<cr><c-u>
-  nnoremap <silent> [fzf]w :<C-u>Windows<cr><c-u>
-  nnoremap <silent> [fzf]h :<C-u>History<cr><c-u>
-  nnoremap <silent> [fzf]ch :<C-u>History:<cr><c-u>
-  nnoremap <silent> [fzf]sh :<C-u>History/<cr><c-u>
-  "nnoremap <silent> [fzf]c :<C-u>Commands<cr><c-u>
-  "nnoremap <silent> [fzf]M :<C-u>Maps<cr><c-u>
-  nnoremap <silent> [fzf]h :<C-u>Helptags<cr><c-u>
-"}}}
-
-" plugin: coc {{{
-  " call coc#util#install()
-
-  let g:coc_global_extensions = [
-  \   'coc-css',
-  \   'coc-explorer',
-  \   'coc-fzf-preview',
-  \   'coc-git',
-  \   'coc-highlight',
-  \   'coc-html',
-  \   'coc-java',
-  \   'coc-jedi',
-  \   'coc-json',
-  \   'coc-lists',
-  \   'coc-python',
-  \   'coc-sh',
-  \   'coc-snippets',
-  \   'coc-tsserver',
-  \   'coc-xml',
-  \   'coc-yaml',
-  \   'coc-yank'
-  \ ]
-
-  " always show signcolumns
-  set signcolumn=yes
-
-  inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
-  " Use tab for trigger completion with characters ahead and navigate.
-  " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-  inoremap <silent><expr> <TAB>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ coc#refresh()
-  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-  endfunction
-
-  autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-
-  " Use K for show documentation in preview window
-  nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-  function! s:show_documentation()
-    if &filetype == 'vim'
-      execute 'h '.expand('<cword>')
-    else
-      call CocAction('doHover')
-    endif
-  endfunction
-
-	" Better display for messages
-	set cmdheight=2
-
-  " Highlight symbol under cursor on CursorHold
-	autocmd CursorHold * silent call CocActionAsync('highlight')
-
-	augroup mygroup
-		autocmd!
-    " Setup formatexpr specified filetype(s).
-		autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-		" Update signature help on jump placeholder
-		autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-	augroup end
-
-  nmap <leader>c [cocPrefix]
-  nnoremap [cocPrefix] <nop>
-
-  " Use `[c` and `]c` for navigate diagnostics
-  nmap <silent> [cocPrefix]D <Plug>(coc-diagnostic-prev)
-  nmap <silent> [cocPrefix]d <Plug>(coc-diagnostic-next)
-
-  " Do default action for next item.
-  nmap <silent> [cocPrefix]n :<C-u>CocNext<CR>
-  " Do default action for previous item.
-  nmap <silent> [cocPrefix]p :<C-u>CocPrev<CR>
-
-  " Remap keys for gotos
-  nmap <silent> [cocPrefix]gd <Plug>(coc-definition)
-  nmap <silent> [cocPrefix]gy <Plug>(coc-type-definition)
-  nmap <silent> [cocPrefix]gi <Plug>(coc-implementation)
-  nmap <silent> [cocPrefix]gr <Plug>(coc-references)
-
-  nmap <space> [cocListPrefix]
-  nnoremap [cocListPrefix] <nop>
-
-  " Using CocList
-  " Show MRU
-  nnoremap <silent> [cocListPrefix]m  :<C-u>CocList mru<cr>
-  nnoremap <silent> [cocListPrefix]M  :<C-u>CocList --normal mru <c-r><c-w><cr>
-  " Show buffer
-  nnoremap <silent> [cocListPrefix]b  :<C-u>CocList buffers<cr>
-  nnoremap <silent> [cocListPrefix]B  :<C-u>CocList --normal buffers <c-r><c-w><cr>
-  " Show files
-  nnoremap <silent> [cocListPrefix]f  :<C-u>CocList files<cr>
-  nnoremap <silent> [cocListPrefix]F  :<C-u>CocList --normal files <c-r><c-w><cr>
-  " Show grep result
-  nnoremap <silent> [cocListPrefix]g  :<C-u>CocList -I grep -smartcase -regex<cr>
-  nnoremap <silent> [cocListPrefix]G  :<C-u>CocList --normal grep -smartcase -regex <c-r><c-w><cr>
-  " Show words result
-  nnoremap <silent> [cocListPrefix]w  :<C-u>CocList -I words<cr>
-  nnoremap <silent> [cocListPrefix]W  :<C-u>CocList --normal words <c-r><c-w><cr>
-  " Show quickfix
-  nnoremap <silent> [cocListPrefix]q  :<C-u>CocList quickfix<cr>
-  " Show all diagnostics
-  nnoremap <silent> [cocListPrefix]d  :<C-u>CocList diagnostics<cr>
-  " Manage extensions
-  nnoremap <silent> [cocListPrefix]e  :<C-u>CocList extensions<cr>
-  " Show commands
-  nnoremap <silent> [cocListPrefix]c  :<C-u>CocList commands<cr>
-  " Find symbol of current document
-  nnoremap <silent> [cocListPrefix]o  :<C-u>CocList outline<cr>
-  " Search workspace symbols
-  nnoremap <silent> [cocListPrefix]s  :<C-u>CocList -I symbols<cr>
-  " Resume latest coc list
-  nnoremap <silent> [cocListPrefix]r  :<C-u>CocListResume<CR>
-
-  let g:coc_explorer_global_presets = {
-  \   'floating': {
-  \      'position': 'floating',
-  \   },
-  \   'floatingLeftside': {
-  \      'position': 'floating',
-  \      'floating-position': 'left-center',
-  \      'floating-width': 50,
-  \   },
-  \   'floatingRightside': {
-  \      'position': 'floating',
-  \      'floating-position': 'left-center',
-  \      'floating-width': 50,
-  \   },
-  \   'simplify': {
-  \     'file.child.template': '[selection | clip | 1] [indent][icon | 1] [filename omitCenter 1]'
-  \   }
-  \ }
-
-  " Use preset argument to open it
-  nnoremap <silent> [cocPrefix]e :CocCommand explorer --preset floating<CR>
+  nnoremap <silent> [fzf]f :<C-u>Files<cr>
+  nnoremap <silent> [fzf]gg :<C-u>GGrep<cr>
+  nnoremap <silent> [fzf]gG :<C-u>GGrep <c-r><c-w><cr>
+  nnoremap <silent> [fzf]gf :<C-u>GFiles<cr>
+  nnoremap <silent> [fzf]gF :<C-u>GFiles <c-r><c-w><cr>
+  nnoremap <silent> [fzf]gs :<C-u>GFiles?<cr>
+  nnoremap <silent> [fzf]gl :<C-u>Commits<cr>
+  nnoremap <silent> [fzf]gL :<C-u>BCommits<cr>
+  nnoremap <silent> [fzf]b :<C-u>Buffers<cr>
+  nnoremap <silent> [fzf]r :<C-u>Rg<cr>
+  nnoremap <silent> [fzf]R :<C-u>Rg <c-r><c-w><cr>
+  nnoremap <silent> [fzf]l :<C-u>Lines<cr>
+  nnoremap <silent> [fzf]L :<C-u>Lines <c-r><c-w><cr>
+  nnoremap <silent> [fzf]bl :<C-u>BLines<cr>
+  nnoremap <silent> [fzf]bL :<C-u>BLines <c-r><c-w><cr>
+  nnoremap <silent> [fzf]t :<C-u>Tags<cr>
+  nnoremap <silent> [fzf]T :<C-u>BTags<cr>
+  nnoremap <silent> [fzf]m :<C-u>Marks<cr>
+  nnoremap <silent> [fzf]w :<C-u>Windows<cr>
+  nnoremap <silent> [fzf]h :<C-u>History<cr>
+  nnoremap <silent> [fzf]ch :<C-u>History:<cr>
+  nnoremap <silent> [fzf]sh :<C-u>History/<cr>
+  nnoremap <silent> [fzf]c :<C-u>Commands<cr>
+  nnoremap <silent> [fzf]M :<C-u>Maps<cr>
+  nnoremap <silent> [fzf]h :<C-u>Helptags<cr>
 "}}}
 
 " plugin: vim-illuminate {{{
@@ -861,12 +671,10 @@ call plug#end()
       \   ],
       \   'right': [
       \     [ 'lineinfo', 'percent' ],
-      \     [ 'fileformat', 'fileencoding', 'filetype' ],
-      \     [ 'cocstatus' ]
+      \     [ 'fileformat', 'fileencoding', 'filetype' ]
       \   ]
       \ },
       \ 'component_function': {
-      \   'cocstatus': 'coc#status',
       \   'gitbranch': 'FugitiveHead',
       \   'readonly': 'LightlineReadonly',
       \   'modified': 'LightlineModified',
