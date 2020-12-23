@@ -172,6 +172,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-vinegar'
   Plug 'tpope/vim-unimpaired'
   Plug 'Yggdroot/indentLine'
+  Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
+
+  " completion
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
   " Tmux
   Plug 'benmills/vimux'
@@ -610,6 +614,21 @@ call plug#end()
   nnoremap <silent> [fzf]c :<C-u>Commands<cr>
   nnoremap <silent> [fzf]M :<C-u>Maps<cr>
   nnoremap <silent> [fzf]h :<C-u>Helptags<cr>
+"}}}
+
+" plugin: deoplete {{{
+  let g:deoplete#enable_at_startup = 1
+  " Tab to cycle thru matches
+  inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+  inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+
+  let g:EclimCompletionMethod = 'omnifunc'
+  let g:deoplete#omni#input_patterns = {}
+  let g:deoplete#omni#input_patterns.java = '[^. *\t]\.\w*'
+"}}}
+
+" plugin: nvim-scrollview {{{
+  highlight ScrollView ctermbg=159 guibg=LightCyan
 "}}}
 
 " plugin: vim-illuminate {{{
