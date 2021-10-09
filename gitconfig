@@ -2,6 +2,7 @@
   templatedir = ~/.config/yt/git/templates
 
 [user]
+  useConfigOnly = true
   name = Yusuke Takebuchi
 
 [commit]
