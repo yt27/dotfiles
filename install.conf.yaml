@@ -18,6 +18,7 @@
     ~/.tmuxline.snapshot:
     ~/.vim: config/nvim
     ~/.vimrc: config/nvim/init.vim
+    ~/.zshrc:
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
