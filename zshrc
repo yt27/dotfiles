@@ -77,7 +77,17 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git themes vi-mode virtualenv zsh-interactive-cd)
+plugins=(
+  copybuffer
+  copyfile
+  dirhistory
+  git
+  themes
+  vi-mode
+  virtualenv
+  zsh-autosuggestions
+  zsh-interactive-cd
+)
 
 source $ZSH/oh-my-zsh.sh
 
