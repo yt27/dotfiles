@@ -11,6 +11,7 @@
       path: config/*
     ~/.bash_profile:
     ~/.bashrc:
+    ~/.editrc:
     ~/.fzf.conf:
     ~/.gitconfig:
     ~/.inputrc:
