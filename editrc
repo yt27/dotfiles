@@ -2,3 +2,6 @@
 bind -v
 
 bind "^R" em-inc-search-prev
+bind "^" ed-move-to-beg
+bind "$" ed-move-to-end
+bind "\t" rl_complete
