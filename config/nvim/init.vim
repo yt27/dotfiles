@@ -774,7 +774,7 @@ call plug#end()
 " plugin: vim-fugitive {{{
   map <leader>gl :Glog<cr>
   map <leader>gs :Git<cr>
-  map <leader>gb :Gblame<cr>
+  map <leader>gb :Git blame<cr>
   map <leader>gr :Gread<cr>
   map <leader>gd :Gvdiff<cr>
 "}}}

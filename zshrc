@@ -138,6 +138,9 @@ export PYTHON_HOME=/export/apps/python/2.7
 export PYTHON3_HOME=/export/apps/python/3.9
 export PATH="$HOME/local/bin:$PYTHON_HOME/bin:$PYTHON3_HOME/bin:/usr/local/bin:$PATH"
 
+# do not share history
+unsetopt share_history
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
