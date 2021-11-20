@@ -147,7 +147,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" setup vim-lug {{{
+" setup vim-plug {{{
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
@@ -175,7 +175,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
 
   " completion
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+  Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 
   " Tmux
   Plug 'benmills/vimux'
@@ -183,6 +184,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'edkolev/tmuxline.vim'
 
   " Dev
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'mfussenegger/nvim-jdtls'
   Plug 'airblade/vim-rooter'
   Plug 'andymass/vim-matchup'
   Plug 'machakann/vim-sandwich'
@@ -557,6 +560,12 @@ call plug#end()
   endif "}}}
 "}}}
 
+" plugin: nvim-lspconfig {{{
+lua << EOF
+  require'lspconfig'.pyright.setup{}
+EOF
+"}}}
+
 " plugin: fzf {{{
   let $FZF_DEFAULT_OPTS .= ' --no-height'
 "}}}
@@ -616,15 +625,8 @@ call plug#end()
   nnoremap <silent> [fzf]h :<C-u>Helptags<cr>
 "}}}
 
-" plugin: deoplete {{{
-  let g:deoplete#enable_at_startup = 1
-  " Tab to cycle thru matches
-  inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-  inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-
-  let g:EclimCompletionMethod = 'omnifunc'
-  let g:deoplete#omni#input_patterns = {}
-  let g:deoplete#omni#input_patterns.java = '[^. *\t]\.\w*'
+" plugin: coq_nvim {{{
+  let g:coq_settings = { 'auto_start': v:true }
 "}}}
 
 " plugin: nvim-scrollview {{{
