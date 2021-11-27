@@ -13,13 +13,6 @@
     return resolve(expand(s:cache_dir . '/' . a:suffix))
   endfunction "}}}
 
-  function! Source(begin, end) "{{{
-    let lines = getline(a:begin, a:end)
-    for line in lines
-      execute line
-    endfor
-  endfunction "}}}
-
   function! Preserve(command) "{{{
     " preparation: save last search, and cursor position.
     let _s = @/
@@ -39,22 +32,6 @@
   function! EnsureExists(path) "{{{
     if !isdirectory(expand(a:path))
       call mkdir(expand(a:path))
-    endif
-  endfunction "}}}
-
-  function! CloseWindowOrKillBuffer() "{{{
-    let number_of_windows_to_this_buffer = len(filter(range(1, winnr('$')), "winbufnr(v:val) == bufnr('%')"))
-
-    " never bdelete a nerd tree
-    if matchstr(expand("%"), 'NERD') == 'NERD'
-      wincmd c
-      return
-    endif
-
-    if number_of_windows_to_this_buffer > 1
-      wincmd c
-    else
-      bdelete
     endif
   endfunction "}}}
 
@@ -175,8 +152,14 @@ call plug#begin('~/.vim/plugged')
   Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
 
   " completion
-  Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
-  Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+  "Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+  "Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'hrsh7th/cmp-buffer'
+  Plug 'hrsh7th/cmp-path'
+  Plug 'hrsh7th/cmp-cmdline'
+  Plug 'hrsh7th/nvim-cmp'
 
   " Tmux
   Plug 'benmills/vimux'
@@ -193,6 +176,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'tomtom/tcomment_vim'
   Plug 'tpope/vim-fugitive'
   Plug 'vim-scripts/vcscommand.vim'
+
+  " Snippets
+  Plug 'hrsh7th/cmp-vsnip'
+  Plug 'hrsh7th/vim-vsnip'
 
   " Syntax
   Plug 'autowitch/hive.vim'
@@ -458,7 +445,7 @@ call plug#end()
   set smartcase
 "}}}
 
-" search {{{
+" bell {{{
   " Don't ring the bell (beep or screen flash) for error messages.
   " set noerrorbells
 
@@ -551,10 +538,10 @@ call plug#end()
     " augroup END
 
     " for .hql files
-    au BufNewFile,BufRead *.hql set filetype=hive expandtab
+    autocmd BufNewFile,BufRead *.hql set filetype=hive expandtab
 
     " for .q files
-    au BufNewFile,BufRead *.q set filetype=hive expandtab
+    autocmd BufNewFile,BufRead *.q set filetype=hive expandtab
 
     let autocommands_loaded = 1
   endif "}}}
@@ -566,9 +553,11 @@ lua << EOF
   -- map buffer local keybindings when the language server attaches
   local nvim_lsp = require('lspconfig')
   local servers = { 'pyright' }
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
   for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {
-      on_attach = require('keybindings').lspOnAttachCallback()
+      on_attach = require('keybindings').lspOnAttachCallback(),
+      capabilities = capabilities
     }
   end
 EOF
@@ -633,8 +622,68 @@ EOF
   nnoremap <silent> [fzf]h :<C-u>Helptags<cr>
 "}}}
 
+" plugin: nvim-cmp {{{
+lua <<EOF
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
+      end,
+    },
+    mapping = {
+      ['<Tab>'] = cmp.mapping.select_next_item(),
+      ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<C-k>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-j>'] = cmp.mapping.scroll_docs(4)
+    },
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      --{ name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    --}, {
+      { name = 'buffer' }
+    })
+  })
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+EOF
+"}}}
+
+" plugin: vim-vsnip {{{
+  " Jump forward or backward
+  imap <expr> \<Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+  smap <expr> \<Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+  imap <expr> \<S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+  smap <expr> \<S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+"}}}
+
 " plugin: coq_nvim {{{
-  let g:coq_settings = { 'auto_start': v:true, 'keymap': { 'jump_to_mark': '<c-m>', 'bigger_preview': '' } }
+  let g:coq_settings = { 'auto_start': v:true, 'keymap': { 'jump_to_mark': '<c-m>', 'bigger_preview': '', 'repeat': 'c.' } }
 "}}}
 
 " plugin: nvim-scrollview {{{

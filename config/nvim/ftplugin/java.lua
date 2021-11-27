@@ -10,6 +10,8 @@ local jdtls_config_path = jdtls_home .. '/config_mac'
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h')
 local workspace_dir = '/Users/ytakebuc/workspace-root/' .. project_name
 
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
 local config = {
   -- The command that starts the language server
   -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
@@ -48,7 +50,9 @@ local config = {
     }
   },
 
-  on_attach = require('keybindings').lspOnAttachCallback()
+  on_attach = require('keybindings').lspOnAttachCallback(),
+
+  capabilities = capabilities
 }
 -- This starts a new client & server,
 -- or attaches to an existing client & server depending on the `root_dir`.
