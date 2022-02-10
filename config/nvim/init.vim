@@ -142,7 +142,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'mbbill/undotree'
   Plug 'mg979/vim-visual-multi', {'branch': 'master'}
   Plug 'RRethy/vim-illuminate'
-  Plug 'ryanoasis/vim-devicons'
+  Plug 'kyazdani42/nvim-web-devicons'
   Plug 't9md/vim-choosewin'
   Plug 'tpope/vim-obsession'
   Plug 'tpope/vim-repeat'
@@ -150,6 +150,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-unimpaired'
   Plug 'Yggdroot/indentLine'
   Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
+
+  " telescope
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-telescope/telescope.nvim'
+  Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
   " completion
   "Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
@@ -622,6 +627,12 @@ EOF
   nnoremap <silent> [fzf]h :<C-u>Helptags<cr>
 "}}}
 
+" plugin: telescope-fzf-native {{{
+lua << EOF
+  require('config.telescope').setup()
+EOF
+"}}}
+
 " plugin: nvim-cmp {{{
 lua <<EOF
   -- Setup nvim-cmp.
@@ -647,7 +658,7 @@ lua <<EOF
     },
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-      --{ name = 'vsnip' }, -- For vsnip users.
+      { name = 'vsnip' }, -- For vsnip users.
       -- { name = 'luasnip' }, -- For luasnip users.
       -- { name = 'ultisnips' }, -- For ultisnips users.
       -- { name = 'snippy' }, -- For snippy users.

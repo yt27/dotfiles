@@ -1,14 +1,18 @@
 -- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
 
-local java_home = '/Library/Java/JavaVirtualMachines/jdk11.0.8-msft.jdk/Contents/Home'
-local jdtls_home = '/Users/ytakebuc/local/jdtls-1.5.0'
+local homeDir = '/Users/ytakebuc'
 
-local java_path = java_home .. '/bin/java'
-local jdtls_launcher_path = jdtls_home .. '/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar'
-local jdtls_config_path = jdtls_home .. '/config_mac'
+local javaHome = '/Library/Java/JavaVirtualMachines/jdk11.0.8-msft.jdk/Contents/Home'
+local jdtlsHome = homeDir .. '/local/jdtls-1.5.0'
 
-local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h')
-local workspace_dir = '/Users/ytakebuc/workspace-root/' .. project_name
+local javaPath = javaHome .. '/bin/java'
+local jdtlsLauncherPath = jdtlsHome .. '/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar'
+local jdtlsConfigPath = jdtlsHome .. '/config_mac'
+
+local projectName = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h')
+local workspaceDir = homeDir .. '/workspace-root/' .. projectName
+
+local lombokJarPath = homeDir .. '/local/jar/lombok-1.18.22.jar'
 
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
@@ -17,7 +21,7 @@ local config = {
   -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
   cmd = {
 
-    java_path, -- or '/path/to/java11_or_newer/bin/java'
+    javaPath, -- or '/path/to/java11_or_newer/bin/java'
             -- depends on if `java` is in your $PATH env variable and if it points to the right version.
 
     '-Declipse.application=org.eclipse.jdt.ls.core.id1',
@@ -30,12 +34,14 @@ local config = {
     '--add-opens', 'java.base/java.util=ALL-UNNAMED',
     '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
 
-    '-jar', jdtls_launcher_path,
+    '-javaagent:' .. lombokJarPath,
 
-    '-configuration', jdtls_config_path,
+    '-jar', jdtlsLauncherPath,
+
+    '-configuration', jdtlsConfigPath,
 
     -- See `data directory configuration` section in the README
-    '-data', workspace_dir
+    '-data', workspaceDir
   },
 
   -- This is the default if not provided, you can remove it. Or adjust as needed.
