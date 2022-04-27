@@ -1,21 +1,62 @@
-# This tmux statusbar config was created by tmuxline.vim
-# on Thu, 06 Apr 2017
+# NOTE: you can use vars with $<var> and ${<var>} as long as the str is double quoted: ""
+# WARNING: hex colors can't contain capital letters
 
+# --> Catppuccin
+thm_bg="#1e1e28"
+thm_fg="#dadae8"
+thm_cyan="#c2e7f0"
+thm_black="#15121c"
+thm_gray="#332e41"
+thm_magenta="#c6aae8"
+thm_pink="#e5b4e2"
+thm_red="#e38c8f"
+thm_green="#b1e3ad"
+thm_yellow="#ebddaa"
+thm_blue="#a4b9ef"
+thm_orange="#f9c096"
+thm_black4="#575268"
+
+# ----------------------------=== Theme ===--------------------------
+
+# status
+set -g status-position bottom
+set -g status "on"
+set -g status-bg "${thm_bg}"
 set -g status-justify "left"
 set -g status-left-length "100"
-set -g status "on"
-set -g pane-active-border-style fg="colour238"
 set -g status-right-length "100"
-set -g status-right-style "none"
-set -g message-style bg="colour251",fg="colour234"
-set -g message-command-style fg="colour234",bg="colour251"
-set -g status-style bg="colour66","none"
-set -g pane-border-style fg="colour251"
-set -g status-left-style "none"
-setw -g window-status-activity-style bg="colour66","none",fg="colour238"
+
+# messages
+set -g message-style fg="${thm_cyan}",bg="${thm_gray}",align="centre"
+set -g message-command-style fg="${thm_cyan}",bg="${thm_gray}",align="centre"
+
+# panes
+set -g pane-border-style fg="${thm_gray}"
+set -g pane-active-border-style fg="${thm_blue}"
+
+# windows
+setw -g window-status-activity-style fg="${thm_fg}",bg="${thm_bg}",none
 setw -g window-status-separator ""
-setw -g window-status-style fg="colour234","none",bg="colour66"
-set -g status-left "#[fg=colour252,bg=colour238] #S #[fg=colour238,bg=colour66,nobold,nounderscore,noitalics]"
-set -g status-right "#[fg=colour251,bg=colour66,nobold,nounderscore,noitalics]#[fg=colour234,bg=colour251] %Y-%m-%d  %H:%M #[fg=colour238,bg=colour251,nobold,nounderscore,noitalics]#[fg=colour252,bg=colour238] #h "
-setw -g window-status-format "#[fg=colour234,bg=colour66] #I #[fg=colour234,bg=colour66] #W "
-setw -g window-status-current-format "#[fg=colour66,bg=colour251,nobold,nounderscore,noitalics]#[fg=colour234,bg=colour251] #I #[fg=colour234,bg=colour251] #W #[fg=colour251,bg=colour66,nobold,nounderscore,noitalics]"
+setw -g window-status-style fg="${thm_fg}",bg="${thm_bg}",none
+
+# --------=== Statusline
+
+set -g status-left ""
+#set -g status-right "#[fg=$thm_pink,bg=$thm_bg,nobold,nounderscore,noitalics]#[fg=$thm_bg,bg=$thm_pink,nobold,nounderscore,noitalics] #[fg=$thm_fg,bg=$thm_gray] #W #{?client_prefix,#[fg=$thm_red],#[fg=$thm_green]}#[bg=$thm_gray]#{?client_prefix,#[bg=$thm_red],#[bg=$thm_green]}#[fg=$thm_bg] #[fg=$thm_fg,bg=$thm_gray] #S #[fg=$thm_bg,bg=$thm_orange] #[fg=$thm_fg,bg=$thm_gray] %Y-%m-%d %H:%M "
+set -g status-right "#[bg=$thm_green]#[fg=$thm_bg]  #[fg=$thm_fg,bg=$thm_gray] #S #[fg=$thm_bg,bg=$thm_orange]  #[fg=$thm_fg,bg=$thm_gray] %Y-%m-%d %H:%M "
+
+# window name
+setw -g window-status-format "#[fg=$thm_bg,bg=$thm_blue] #I #[fg=$thm_fg,bg=$thm_gray] #W "
+setw -g window-status-current-format "#[fg=$thm_bg,bg=$thm_orange] #I #[fg=$thm_fg,bg=$thm_bg] #W "
+
+# current_dir
+# setw -g window-status-format "#[fg=$thm_bg,bg=$thm_blue] #I #[fg=$thm_fg,bg=$thm_gray] #{b:pane_current_path} "
+# setw -g window-status-current-format "#[fg=$thm_bg,bg=$thm_orange] #I #[fg=$thm_fg,bg=$thm_bg] #{b:pane_current_path} "
+
+# parent_dir/current_dir
+# setw -g window-status-format "#[fg=colour232,bg=colour111] #I #[fg=colour222,bg=colour235] #(echo '#{pane_current_path}' | rev | cut -d'/' -f-2 | rev) "
+# setw -g window-status-current-format "#[fg=colour232,bg=colour208] #I #[fg=colour255,bg=colour237] #(echo '#{pane_current_path}' | rev | cut -d'/' -f-2 | rev) "
+
+# --------=== Modes
+setw -g clock-mode-colour "${thm_blue}"
+setw -g mode-style "fg=${thm_pink} bg=${thm_black4} bold"
