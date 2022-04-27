@@ -133,12 +133,13 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf.vim'
 
   " Color scheme
-  Plug 'kristijanhusak/vim-hybrid-material'
+  Plug 'catppuccin/nvim', {'as': 'catppuccin'}
 
   " General
   Plug 'easymotion/vim-easymotion'
   Plug 'google/vim-searchindex'
-  Plug 'itchyny/lightline.vim'
+  " Plug 'itchyny/lightline.vim'
+  Plug 'nvim-lualine/lualine.nvim'
   Plug 'mbbill/undotree'
   Plug 'mg979/vim-visual-multi', {'branch': 'master'}
   Plug 'RRethy/vim-illuminate'
@@ -181,6 +182,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'tomtom/tcomment_vim'
   Plug 'tpope/vim-fugitive'
   Plug 'vim-scripts/vcscommand.vim'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
   " Snippets
   Plug 'hrsh7th/cmp-vsnip'
@@ -311,8 +313,7 @@ call plug#end()
 
 " ui {{{
   set background=dark
-  let g:hybrid_custom_term_colors = 1
-  colorscheme hybrid_material
+  colorscheme catppuccin
 
   " Enable syntax highlighting
   syntax on
@@ -627,9 +628,11 @@ EOF
   nnoremap <silent> [fzf]h :<C-u>Helptags<cr>
 "}}}
 
-" plugin: telescope-fzf-native {{{
+" plugin configs {{{
 lua << EOF
+  require('config.lualine').setup()
   require('config.telescope').setup()
+  require('config.nvim-treesitter').setup()
 EOF
 "}}}
 

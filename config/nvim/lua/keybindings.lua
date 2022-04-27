@@ -2,7 +2,7 @@ local M = {}
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-function M:lspOnAttachCallback()
+function M.lspOnAttachCallback()
   return function(client, bufnr)
     local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -32,6 +32,12 @@ function M:lspOnAttachCallback()
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
     buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
   end
+end
+
+function M.nnoremap(mappedKeys, mapping, opts)
+  local options = {noremap = true}
+  if opts then options = vim.tbl_extend('force', options, opts) end
+  vim.api.nvim_set_keymap('n', mappedKeys, mapping, options)
 end
 
 return M
