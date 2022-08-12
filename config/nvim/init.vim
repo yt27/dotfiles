@@ -134,6 +134,12 @@ call plug#begin('~/.vim/plugged')
 
   " Color scheme
   Plug 'catppuccin/nvim', {'as': 'catppuccin'}
+  Plug 'morhetz/gruvbox'
+  Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+  Plug 'Mofiqul/vscode.nvim'
+  Plug 'marko-cerovac/material.nvim'
+
+  Plug 'sunjon/shade.nvim'
 
   " General
   Plug 'easymotion/vim-easymotion'
@@ -160,7 +166,6 @@ call plug#begin('~/.vim/plugged')
   " completion
   "Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
   "Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
-  Plug 'neovim/nvim-lspconfig'
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-buffer'
   Plug 'hrsh7th/cmp-path'
@@ -183,6 +188,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-fugitive'
   Plug 'vim-scripts/vcscommand.vim'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'nvim-treesitter/nvim-treesitter-context'
 
   " Snippets
   Plug 'hrsh7th/cmp-vsnip'
@@ -313,7 +319,12 @@ call plug#end()
 
 " ui {{{
   set background=dark
-  colorscheme catppuccin
+  " latte, frappe, macchiato, mocha
+  let g:catppuccin_flavour = "frappe"
+  let g:tokyonight_style = "night"
+  let g:material_style = "deep ocean"
+  let g:vscode_style = "dark"
+  colorscheme tokyonight
 
   " Enable syntax highlighting
   syntax on
@@ -436,6 +447,54 @@ call plug#end()
   set statusline+=char\ 0x%-2B
 "}}}
 
+" tabline {{{
+  " Rename tabs to show tab number.
+  " (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
+  if exists("+showtabline")
+      function! MyTabLine()
+          let s = ''
+          let wn = ''
+          let t = tabpagenr()
+          let i = 1
+          while i <= tabpagenr('$')
+              let buflist = tabpagebuflist(i)
+              let winnr = tabpagewinnr(i)
+              let s .= '%' . i . 'T'
+              let s .= (i == t ? '%1*' : '%2*')
+              let s .= ' '
+              let wn = tabpagewinnr(i,'$')
+
+              let s .= '%#TabNum#'
+              let s .= i
+              " let s .= '%*'
+              let s .= (i == t ? '%#TabLineSel#' : '%#TabLine#')
+              let bufnr = buflist[winnr - 1]
+              let file = bufname(bufnr)
+              let buftype = getbufvar(bufnr, 'buftype')
+              if buftype == 'nofile'
+                  if file =~ '\/.'
+                      let file = substitute(file, '.*\/\ze.', '', '')
+                  endif
+              else
+                  let file = fnamemodify(file, ':p:t')
+              endif
+              if file == ''
+                  let file = '[No Name]'
+              endif
+              let s .= ' ' . file . ' '
+              let i = i + 1
+          endwhile
+          let s .= '%T%#TabLineFill#%='
+          let s .= (tabpagenr('$') > 1 ? '%999XX' : 'X')
+          return s
+      endfunction
+      set stal=2
+      set tabline=%!MyTabLine()
+      set showtabline=1
+      highlight link TabNum Special
+  endif
+"}}}
+
 " search {{{
   " While typing a search command, show where the pattern, as it was typed so far, matches
   set incsearch
@@ -553,22 +612,6 @@ call plug#end()
   endif "}}}
 "}}}
 
-" plugin: nvim-lspconfig {{{
-lua << EOF
-  -- Use a loop to conveniently call 'setup' on multiple servers and
-  -- map buffer local keybindings when the language server attaches
-  local nvim_lsp = require('lspconfig')
-  local servers = { 'pyright' }
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup {
-      on_attach = require('keybindings').lspOnAttachCallback(),
-      capabilities = capabilities
-    }
-  end
-EOF
-"}}}
-
 " plugin: fzf {{{
   let $FZF_DEFAULT_OPTS .= ' --no-height'
 "}}}
@@ -631,60 +674,11 @@ EOF
 " plugin configs {{{
 lua << EOF
   require('config.lualine').setup()
-  require('config.telescope').setup()
+  require('config.nvim-cmp').setup()
+  require('config.nvim-lspconfig').setup()
   require('config.nvim-treesitter').setup()
-EOF
-"}}}
-
-" plugin: nvim-cmp {{{
-lua <<EOF
-  -- Setup nvim-cmp.
-  local cmp = require'cmp'
-
-  cmp.setup({
-    snippet = {
-      -- REQUIRED - you must specify a snippet engine
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-        -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
-      end,
-    },
-    mapping = {
-      ['<Tab>'] = cmp.mapping.select_next_item(),
-      ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-      ['<C-Space>'] = cmp.mapping.complete(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }),
-      ['<C-k>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-j>'] = cmp.mapping.scroll_docs(4)
-    },
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-      -- { name = 'luasnip' }, -- For luasnip users.
-      -- { name = 'ultisnips' }, -- For ultisnips users.
-      -- { name = 'snippy' }, -- For snippy users.
-    --}, {
-      { name = 'buffer' }
-    })
-  })
-
-  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline('/', {
-    sources = {
-      { name = 'buffer' }
-    }
-  })
-
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    })
-  })
+  require('config.shade').setup()
+  require('config.telescope').setup()
 EOF
 "}}}
 
