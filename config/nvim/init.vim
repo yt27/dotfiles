@@ -133,43 +133,38 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf.vim'
 
   " Color scheme
-  Plug 'catppuccin/nvim', {'as': 'catppuccin'}
-  Plug 'morhetz/gruvbox'
-  Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
   Plug 'Mofiqul/vscode.nvim'
+  Plug 'catppuccin/nvim', {'as': 'catppuccin'}
+  Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
   Plug 'marko-cerovac/material.nvim'
-
-  Plug 'sunjon/shade.nvim'
+  Plug 'morhetz/gruvbox'
 
   " General
+  Plug 'RRethy/vim-illuminate'
+  Plug 'Yggdroot/indentLine'
+  Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
   Plug 'easymotion/vim-easymotion'
   Plug 'google/vim-searchindex'
-  " Plug 'itchyny/lightline.vim'
-  Plug 'nvim-lualine/lualine.nvim'
+  Plug 'kyazdani42/nvim-web-devicons'
   Plug 'mbbill/undotree'
   Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-  Plug 'RRethy/vim-illuminate'
-  Plug 'kyazdani42/nvim-web-devicons'
+  Plug 'nvim-lualine/lualine.nvim'
   Plug 't9md/vim-choosewin'
   Plug 'tpope/vim-obsession'
   Plug 'tpope/vim-repeat'
-  Plug 'tpope/vim-vinegar'
   Plug 'tpope/vim-unimpaired'
-  Plug 'Yggdroot/indentLine'
-  Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
+  Plug 'tpope/vim-vinegar'
+  Plug 'nvim-lua/plenary.nvim'
 
   " telescope
-  Plug 'nvim-lua/plenary.nvim'
-  Plug 'nvim-telescope/telescope.nvim'
   Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+  Plug 'nvim-telescope/telescope.nvim'
 
   " completion
-  "Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
-  "Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
-  Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-buffer'
-  Plug 'hrsh7th/cmp-path'
   Plug 'hrsh7th/cmp-cmdline'
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'hrsh7th/cmp-path'
   Plug 'hrsh7th/nvim-cmp'
 
   " Tmux
@@ -178,17 +173,19 @@ call plug#begin('~/.vim/plugged')
   Plug 'edkolev/tmuxline.vim'
 
   " Dev
-  Plug 'neovim/nvim-lspconfig'
-  Plug 'mfussenegger/nvim-jdtls'
   Plug 'airblade/vim-rooter'
   Plug 'andymass/vim-matchup'
+  Plug 'folke/zen-mode.nvim'
   Plug 'machakann/vim-sandwich'
   Plug 'majutsushi/tagbar'
+  Plug 'mfussenegger/nvim-jdtls'
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'nvim-treesitter/nvim-treesitter-context'
   Plug 'tomtom/tcomment_vim'
   Plug 'tpope/vim-fugitive'
   Plug 'vim-scripts/vcscommand.vim'
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/nvim-treesitter-context'
+  Plug 'sindrets/diffview.nvim'
 
   " Snippets
   Plug 'hrsh7th/cmp-vsnip'
@@ -673,12 +670,16 @@ call plug#end()
 
 " plugin configs {{{
 lua << EOF
+  require('keybindings').setup()
+
+  require('config.diffview').setup()
+  require('config.highlight').setup()
   require('config.lualine').setup()
   require('config.nvim-cmp').setup()
   require('config.nvim-lspconfig').setup()
   require('config.nvim-treesitter').setup()
-  require('config.shade').setup()
   require('config.telescope').setup()
+  require('config.zen-mode').setup()
 EOF
 "}}}
 

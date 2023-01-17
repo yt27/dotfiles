@@ -40,4 +40,8 @@ function M.nnoremap(mappedKeys, mapping, opts)
   vim.api.nvim_set_keymap('n', mappedKeys, mapping, options)
 end
 
+function M:setup()
+  M.nnoremap('<leader>tc', '<cmd>tabclose<cr>')
+end
+
 return M
