@@ -14,7 +14,7 @@ local workspaceDir = homeDir .. '/workspace-root/' .. projectName
 
 local lombokJarPath = homeDir .. '/local/jar/lombok-1.18.22.jar'
 
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local config = {
   -- The command that starts the language server
