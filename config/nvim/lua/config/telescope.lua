@@ -1,9 +1,20 @@
 local M = {}
 
 function M:setup()
+  -- To open result in Trouble
+  -- https://github.com/folke/trouble.nvim
+  local actions = require("telescope.actions")
+  local trouble = require("trouble.providers.telescope")
+
   -- You dont need to set any of these options. These are the default ones. Only
   -- the loading is important
   require('telescope').setup {
+    defaults = {
+      mappings = {
+        i = { ["<c-t>"] = trouble.open_with_trouble },
+        n = { ["<c-t>"] = trouble.open_with_trouble }
+      }
+    },
     extensions = {
       fzf = {
         fuzzy = true,                    -- false will only do exact matching

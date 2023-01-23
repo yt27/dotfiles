@@ -10,6 +10,11 @@ function M.lspOnAttachCallback()
     -- Enable completion triggered by <c-x><c-o>
     buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
+    -- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
+    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+      border = "rounded",
+    })
+
     -- Mappings.
     local opts = { noremap=true, silent=true }
 
@@ -31,6 +36,8 @@ function M.lspOnAttachCallback()
     buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
     buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+    buf_set_keymap('n', 'gp', '<cmd>lua vim.diagnostic.open_float(nil, { focusable = false, close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" }, border = "rounded", source = "always", prefix = " " })<CR>', opts)
   end
 end
 
@@ -40,8 +47,15 @@ function M.nnoremap(mappedKeys, mapping, opts)
   vim.api.nvim_set_keymap('n', mappedKeys, mapping, options)
 end
 
+function M.tnoremap(mappedKeys, mapping, opts)
+  local options = {noremap = true}
+  if opts then options = vim.tbl_extend('force', options, opts) end
+  vim.api.nvim_set_keymap('t', mappedKeys, mapping, options)
+end
+
 function M:setup()
   M.nnoremap('<leader>tc', '<cmd>tabclose<cr>')
+  -- M.tnoremap('<Esc>', '<C-\\><C-n>')
 end
 
 return M

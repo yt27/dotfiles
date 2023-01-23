@@ -187,6 +187,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'vim-scripts/vcscommand.vim'
   Plug 'sindrets/diffview.nvim'
 
+  Plug 'folke/trouble.nvim'
+
   " Snippets
   Plug 'hrsh7th/cmp-vsnip'
   Plug 'hrsh7th/vim-vsnip'
@@ -267,6 +269,9 @@ call plug#end()
 
   set cscopetag
   set cscopeprg=gtags-cscope
+
+  " scrollback for terminal buffers
+  set scrollback=100000
 
   " vim file/folder management {{{
     " persistent undo
@@ -679,6 +684,7 @@ lua << EOF
   require('config.nvim-lspconfig').setup()
   require('config.nvim-treesitter').setup()
   require('config.telescope').setup()
+  require('config.trouble').setup()
   require('config.zen-mode').setup()
 EOF
 "}}}
