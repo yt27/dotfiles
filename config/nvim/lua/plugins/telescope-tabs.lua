@@ -1,0 +1,5 @@
+return {
+  {
+    "LukasPietzschmann/telescope-tabs"
+  }
+}
