@@ -26,12 +26,43 @@ return {
             override_file_sorter = true,     -- override the file sorter
             case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
                                              -- the default case_mode is "smart_case"
+          },
+          lsp_handlers = {
+            disable = {},
+            location = {
+              telescope = {},
+              no_results_message = 'No references found'
+            },
+            symbol = {
+              telescope = {},
+              no_results_message = 'No symbols found'
+            },
+            call_hierarchy = {
+              telescope = {},
+              no_results_message = 'No calls found'
+            },
+            code_action = {
+              telescope = {},
+              no_results_message = 'No code actions available',
+              prefix = ''
+            }
+          },
+          undo = {
+            side_by_side = true,
+            layout_strategy = "vertical",
+            layout_config = {
+              preview_height = 0.8,
+            }
           }
         }
       })
       -- To get fzf loaded and working with telescope, you need to call
       -- load_extension, somewhere after setup function:
       require('telescope').load_extension('fzf')
+      require("telescope").load_extension("lsp_handlers")
+      require("telescope").load_extension("notify")
+      require("telescope").load_extension("telescope-tabs")
+      require("telescope").load_extension("undo")
 
       local map = require('configs.keymaps').map
       map('n', '<space>tf', '<cmd>lua require(\'telescope.builtin\').find_files()<cr>')

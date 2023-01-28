@@ -48,5 +48,6 @@ require("lazy").setup({
   },
 })
 
-require("configs.options").setup()
+require("configs.autocmds").setup()
 require("configs.keymaps").setup()
+require("configs.options").setup()
