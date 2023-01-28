@@ -156,6 +156,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-vinegar'
   Plug 'nvim-lua/plenary.nvim'
 
+  Plug 'nvim-neo-tree/neo-tree.nvim', { 'branch': 'v2.x' }
+  Plug 'MunifTanjim/nui.nvim'
+
   " telescope
   Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
   Plug 'nvim-telescope/telescope.nvim'
@@ -680,6 +683,7 @@ lua << EOF
   require('config.diffview').setup()
   require('config.highlight').setup()
   require('config.lualine').setup()
+  require('config.neo-tree').setup()
   require('config.nvim-cmp').setup()
   require('config.nvim-lspconfig').setup()
   require('config.nvim-treesitter').setup()
