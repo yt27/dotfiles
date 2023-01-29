@@ -1,6 +1,15 @@
 local M = {}
 
 function M:setup()
+  -- Commenting out for now as this seem to not apply syntax highlights etc.
+  -- vim.api.nvim_create_autocmd("VimEnter", {
+  --   callback = function()
+  --     if vim.fn.argc() == 0 then
+  --       require("persistence").load()
+  --     end
+  --   end,
+  -- })
+
   -- From https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
   -- go to last loc when opening a buffer
   vim.api.nvim_create_autocmd("BufReadPost", {

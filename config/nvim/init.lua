@@ -51,3 +51,8 @@ require("lazy").setup({
 require("configs.autocmds").setup()
 require("configs.keymaps").setup()
 require("configs.options").setup()
+
+-- load session if started without args
+if vim.fn.argc() == 0 then
+  require("persistence").load()
+end

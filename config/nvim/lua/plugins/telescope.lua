@@ -71,6 +71,13 @@ return {
       map('n', '<space>tG', '<cmd>lua require(\'telescope.builtin\').grep_string()<cr>')
       map('n', '<space>tb', '<cmd>lua require(\'telescope.builtin\').current_buffer_fuzzy_find()<cr>')
       map('n', '<space>tB', '<cmd>lua require(\'telescope.builtin\').buffers()<cr>')
+
+      map('n', '<space>tn', '<cmd>lua require(\'telescope\').extensions.notify.notify()<cr>')
+
+      map('n', '<space>tu', '<cmd>lua require("telescope").extensions.undo.undo()<cr>')
+
+      map('n', '<space>tt', '<cmd>lua require(\'telescope-tabs\').list_tabs()<cr>')
+      map('n', '<space>tT', '<cmd>lua require(\'telescope-tabs\').go_to_previous()<cr>')
     end
   }
 }
