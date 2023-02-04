@@ -9,7 +9,7 @@ return {
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
       for _, lsp in ipairs(servers) do
         nvim_lsp[lsp].setup {
-          on_attach = require('configs.keymaps').lspOnAttachCallback(),
+          on_attach = require('configs.lsp').onAttach(),
           capabilities = capabilities
         }
       end

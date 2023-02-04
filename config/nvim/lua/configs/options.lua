@@ -40,7 +40,7 @@ function M:setup()
   opt.smartindent = true -- Insert indents automatically
   opt.softtabstop = 2 -- tab == 2 spaces
   opt.spelllang = { "en" }
-  opt.splitbelow = true -- Put new windows below current
+  opt.splitbelow = false -- Put new windows above current
   opt.splitright = true -- Put new windows right of current
   opt.tabstop = 2 -- Number of spaces tabs count for
   opt.termguicolors = true -- True color support
