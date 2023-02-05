@@ -12,11 +12,26 @@ return {
       local actions = require("telescope.actions")
       local trouble = require("trouble.providers.telescope")
 
+      -- To get fzf loaded and working with telescope, you need to call
+      -- load_extension, somewhere after setup function:
+      require('telescope').load_extension('fzf')
+      require("telescope").load_extension("lsp_handlers")
+      require("telescope").load_extension("notify")
+      require("telescope").load_extension("telescope-tabs")
+      require("telescope").load_extension("undo")
+
       require("telescope").setup({
         defaults = {
+          path_display = { "truncate" },
+
           mappings = {
             i = { ["<c-t>"] = trouble.open_with_trouble },
             n = { ["<c-t>"] = trouble.open_with_trouble }
+          }
+        },
+        pickers = {
+          lsp_document_symbols = {
+            fname_width = 64
           }
         },
         extensions = {
@@ -56,13 +71,6 @@ return {
           }
         }
       })
-      -- To get fzf loaded and working with telescope, you need to call
-      -- load_extension, somewhere after setup function:
-      require('telescope').load_extension('fzf')
-      require("telescope").load_extension("lsp_handlers")
-      require("telescope").load_extension("notify")
-      require("telescope").load_extension("telescope-tabs")
-      require("telescope").load_extension("undo")
 
       local map = require('configs.keymaps').map
       map('n', '<space>tf', '<cmd>lua require(\'telescope.builtin\').find_files()<cr>')

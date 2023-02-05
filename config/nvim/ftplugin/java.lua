@@ -56,7 +56,7 @@ local config = {
     }
   },
 
-  on_attach = require('configs.lsp').onAttach(),
+  on_attach = require('configs.lsp').onAttach,
 
   capabilities = capabilities
 }
