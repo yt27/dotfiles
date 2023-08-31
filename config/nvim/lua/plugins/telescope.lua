@@ -80,6 +80,8 @@ return {
       map('n', '<space>tb', '<cmd>lua require(\'telescope.builtin\').current_buffer_fuzzy_find()<cr>')
       map('n', '<space>tB', '<cmd>lua require(\'telescope.builtin\').buffers()<cr>')
 
+      map('n', '<space>tr', '<cmd>lua require(\'telescope.builtin\').resume()<cr>')
+
       map('n', '<space>tn', '<cmd>lua require(\'telescope\').extensions.notify.notify()<cr>')
 
       map('n', '<space>tu', '<cmd>lua require("telescope").extensions.undo.undo()<cr>')

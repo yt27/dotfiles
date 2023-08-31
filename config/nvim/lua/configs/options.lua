@@ -54,17 +54,11 @@ function M:setup()
   opt.wildignore = "*.o,*.obj,*.exe,*.class,*.pyc,*.pyo"
   opt.wildmode = "list:longest,full"
   opt.wrap = false -- Disable line wrap
-  
-  if vim.fn.has("nvim-0.9.0") == 1 then
-    opt.splitkeep = "screen"
-    opt.shortmess:append { C = true }
-  end
-  
+  opt.splitkeep = "cursor"
+  -- opt.shortmess:append { C = true }
+
   -- Fix markdown indentation settings
   vim.g.markdown_recommended_style = 0
-
-  -- Different color for active window/buffer
-  vim.api.nvim_set_hl(0, 'NormalNC', { bg = "#2a2b36" })
 end
 
 return M
